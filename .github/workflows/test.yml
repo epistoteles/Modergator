@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        # first do all steps necessary before testing
+        python -m pip install --upgrade pip setuptools wheel
+        pip3 install flake8 pytest
+        pip3 install -Iv numpy~=1.18.5
+        sudo apt-get -y install screen net-tools tesseract-ocr virtualenv
+        source install.sh
+        source run.sh
+    - name: Test with pytest
+      run: |
+        # run the relevant tests
+        sleep 60
+        pytest --ignore=meme-model-api/vilio
