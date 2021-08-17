@@ -25,19 +25,12 @@ tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 class Target(Resource):
 
     def get(self):
-        print("START get")
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('text', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
         text = args['text']
-        #output = self.model.predict(text)
-        print("nach text")
         logits = self.predict(text, tokenizer, model)
-        print("text nach logits1")
         logits = torch.sigmoid(logits)
-        print("text nach logits2")
-
-
         print("Input text:", text)
         print("Logits:")
         print(logits)
@@ -52,7 +45,6 @@ class Target(Resource):
         return {'target_groups': target_groups}
 
     def predict(self,text, tokenizer, model):
-        print("START predicition")
         encoded_input = tokenizer(text)
         token_ids = torch.tensor(encoded_input.input_ids).unsqueeze(0)
         token_type_ids = torch.tensor(encoded_input.token_type_ids).unsqueeze(0)
