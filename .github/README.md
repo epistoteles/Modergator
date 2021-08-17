@@ -18,16 +18,20 @@
   <a href="#%EF%B8%8F-license">License</a>
 </p>
 
-# Modergator - Hate Speech Detection
-This bot is able to process several kinds of messages send in a Telegram group. The messages are checked for hate speech.
+# 🐊 Modergator - Hate Speech Detection
+Modergator is a Telegram bot who is able to process several kinds of messages send in a Telegram group. The messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given. There exists an option to optout of the processing of messages for the users of the group.
+
+WARNING: The repository contains content that is offensive and/or hateful in nature.
 
 ## 🎯 Key Features
 
-This bot does A, B and C.
+This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio), which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/).
 
 ## 💡 How To Use
 
-Usage for Telegram user (non-techies)
+In order to use the bot, a Telegram account is needed. For instructions on how to create an account, see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by typing a message in the text field. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+
+You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
 ## ⚙️ Installation
 
@@ -64,7 +68,7 @@ This will start a virtual environment, install all dependencies inside it and st
 ### Voice API
 
 ### Target API
-### How the target detection works
+#### How the target detection works
 
 the target detection is based on HateXplain (for more information see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of discriminated target groups.
 
@@ -82,7 +86,7 @@ The trained model can be used to predict new input.
 ## ‎‍💻 Contributors
 
 ## ⚠️ License
-
+This repository has been licensed with MIT (see the file LICENSE).
 
 ## Dump: Below here old README concent to be deleted
 
