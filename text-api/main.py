@@ -39,8 +39,11 @@ class Classifier(Resource):
         outputs = self.model(**inputs, labels=labels)
         scores = outputs.logits.softmax(dim=-1).tolist()[0]
         label = self.categories[np.argmax(scores)]
+        print("SCORE LABEL: ", np.argmax(scores))
+        print("SCORE LABEL INT", int(np.argmax(scores)))
         return {'scores': json.dumps(scores),
-                'label': label}, 200
+                'label': label,
+                'label_score': max(scores)}, 200
 
     def post(self):
         pass

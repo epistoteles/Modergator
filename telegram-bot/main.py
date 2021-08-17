@@ -28,7 +28,7 @@ TOKEN = ""
 
 with open("telegram-bot/telegram_bot_token.txt", "r") as file:
     TOKEN = file.readline().strip()
-    
+
 print("TOKEN", TOKEN)
 # flag scores above threshold as hateful
 IMAGE_THRESHOLD = 0.5
@@ -195,13 +195,13 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
     print(r.json())
     label = r.json()['label']
+    label_score = r.json()['label_score']
     text_scores = json.loads(r.json()['scores'])
-    if label in ['offensive', 'hate']:
+    if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
         target_groups = score_target(text)
         print("target_groups: ", target_groups)
-        if target_groups:
-            answer += f"Your message was deemed {label}. Scores (hate, normal, offensive): {str(text_scores)}.\n"
-
+        answer += f"Your message was deemed {label}. Your {label} score was {label_score:.2f}.\n"
+        if not target_groups:
             answer += f"Your hate was probably directed towards {target_groups}."
 
     for key, value in image_scores.items():
