@@ -24,8 +24,12 @@ import shutil
 import pickle
 
 
-TOKEN = "1878091664:AAFaHG1cCnDOvUiBsNUOLD_OpZcJvQXv3yU"
+TOKEN = ""
 
+with open("telegram-bot/telegram_bot_token.txt", "r") as file:
+    TOKEN = file.readline().strip()
+    
+print("TOKEN", TOKEN)
 # flag scores above threshold as hateful
 IMAGE_THRESHOLD = 0.5
 TEXT_THRESHOLD = 0.5
