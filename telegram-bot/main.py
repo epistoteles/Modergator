@@ -47,19 +47,20 @@ def start(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown_v2(
-        fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\. We do not tolerate hatespeech here\. Hatespeech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor: https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf\. To prevent hatespeech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. All messages send in this group are processed by me\. If you don't agree to this processing, please do not send any messages\. We are currently working on opt\-out options\. Thank you, your Modergator\!",
+        fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\:wave: In this group hate speech is not tolerated\:x: Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor (https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf)\. To prevent and handle hate speech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. All messages send in this group are processed by me\. If you don't agree to this processing, please type /optout and your messages will not be processed\. Have fun, your Modergator \:crocodile:",
         reply_markup=ForceReply(selective=True),
     )
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group. TODO'
+    update.message.reply_text('I am Modergator \:crocodile: and keep an eye out for hateful messages in this group.'
                               'You can use the following commands:'
-                              '/help'
-                              '/joke'
-                              '/optout'
-                              '/optin')
+                              '/help to get an overview of the commands'
+                              '/joke to read a joke'
+                              '/optout to optout of thr processing of your messages'
+                              '/optin to opt-in again'
+                              '/poll to discuss the classification')
 
 
 def optout_command(update: Update, _: CallbackContext) -> None:
@@ -69,7 +70,7 @@ def optout_command(update: Update, _: CallbackContext) -> None:
     if user.id not in optoutlist:
         pickle.dump(optoutlist + [user.id], open('optoutlist.pickle', 'wb'))
         update.message.reply_text(
-            f'Your user ID {user.id} has been saved to our opt-out list. To opt in again, use the /optin command.')
+            f'Your user ID {user.id} has been saved to my opt-out list. To opt in again, use the /optin command.')
     else:
         update.message.reply_text(
             f'You have already opted out. To opt in again, use the /optin command.')
@@ -109,7 +110,7 @@ def poll_command(update: Update, context: CallbackContext) -> None:
     questions = ["Offensive", "Hateful", "Normal", "I don't know"]
     message = context.bot.send_poll(
         update.effective_chat.id,
-        "How would you classify the previous text?",
+        "How would you classify the previous message?",
         questions,
         is_anonymous=True,
         allows_multiple_answers=False,
@@ -194,9 +195,9 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     if label in ['offensive', 'hate']:
         target_groups = score_target(text)
         print("target_groups: ", target_groups)
-        answer += f"Your message was deemed {label}. The scores are (hate, normal, offensive): {str(text_scores)}.\n"
         if target_groups:
-            answer += f"your hate was probably directed towards {target_groups}."
+            answer += f"Your message was deemed {label}. The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"
+            answer += f"Your hate was probably directed towards {target_groups}."
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
@@ -207,7 +208,7 @@ def handle_text(update: Update, _: CallbackContext) -> None:
 
     if answer:
         update.message.reply_text(answer)
-        
+
 
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
@@ -227,11 +228,10 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
 
     if label in ['hate', 'normal', 'offensive']:
         answer += f"Your voice message was deemed {label}.\n" \
-                  f"Scores (hate, normal, offensive): {str(text_scores)}.\n" \
-                  f"Transcription: {text}"
+                 f"The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"#f"Scores (hate, normal, offensive): {str(text_scores)}.\n" \
         if target_groups:
             answer += f"your hate was probably directed towards {target_groups}."
-
+        answer += f"This text has been recognised: {text}"
     if answer:
         update.message.reply_text(answer)
 
@@ -254,7 +254,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         text = update.message.caption
         label, text_scores = score_text(text)
         if label in ['offensive', 'hate']:
-            answer += f"Your message was deemed {label}. Scores (hate, normal, offensive): {str(text_scores)}.\n"
+            answer += f"Your message was deemed {label}. The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"#Scores (hate, normal, offensive): {str(text_scores)}.\n"
 
     # get file_path of image
     if update.message.document:
