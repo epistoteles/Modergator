@@ -8,9 +8,11 @@ pip3 install virtualenv
 source meme-model-api/memeenv/bin/activate
 
 # install meme-model-api requirements
+pip3 install --upgrade pip
 pip3 install -r meme-model-api/requirements.txt
 
 # create configs directory
+pip3 install numpy==1.18.1 # to be sure that it is installed for the setup
 cd meme-model-api/vilio/py-bottom-up-attention
 python3 setup.py build develop
 cd ../../..
