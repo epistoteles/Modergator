@@ -24,7 +24,7 @@ import shutil
 import pickle
 
 
-TOKEN = "1878091664:AAFkmm0fylr3SmNMW_U7xa-JEtkFBIOTheQ"
+TOKEN = "1878091664:AAFaHG1cCnDOvUiBsNUOLD_OpZcJvQXv3yU"
 
 # flag scores above threshold as hateful
 IMAGE_THRESHOLD = 0.5
@@ -196,7 +196,8 @@ def handle_text(update: Update, _: CallbackContext) -> None:
         target_groups = score_target(text)
         print("target_groups: ", target_groups)
         if target_groups:
-            answer += f"Your message was deemed {label}. The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"
+            answer += f"Your message was deemed {label}. Scores (hate, normal, offensive): {str(text_scores)}.\n"
+
             answer += f"Your hate was probably directed towards {target_groups}."
 
     for key, value in image_scores.items():
@@ -227,8 +228,8 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
     target_groups = score_target(text)
 
     if label in ['hate', 'normal', 'offensive']:
-        answer += f"Your voice message was deemed {label}.\n" \
-                 f"The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"#f"Scores (hate, normal, offensive): {str(text_scores)}.\n" \
+        answer += f"Your voice message was deemed {label}.\n"
+        answer += f"Scores (hate, normal, offensive): {str(text_scores)}.\n"
         if target_groups:
             answer += f"your hate was probably directed towards {target_groups}."
         answer += f"This text has been recognised: {text}"
@@ -254,7 +255,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         text = update.message.caption
         label, text_scores = score_text(text)
         if label in ['offensive', 'hate']:
-            answer += f"Your message was deemed {label}. The scores are \nhate: {text_scores[0]:.2f}\nnormal: { {text_scores[1]:.2f}}, \noffensive: {text_scores[2]:.2f}.\n"#Scores (hate, normal, offensive): {str(text_scores)}.\n"
+            answer += f"Your message was deemed {label}. Scores (hate, normal, offensive): {str(text_scores)}.\n"
 
     # get file_path of image
     if update.message.document:
