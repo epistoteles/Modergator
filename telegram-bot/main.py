@@ -198,10 +198,11 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     label_score = r.json()['label_score']
     text_scores = json.loads(r.json()['scores'])
     if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
-        target_groups = score_target(text)
+        target_groups = score_target(text) # a string with square brackets
+        target_groups = target_groups.strip("[]") # remove square brackets
         print("target_groups: ", target_groups)
         answer += f"Your message was deemed {label}. Your {label} score was {label_score:.2f}.\n"
-        if not target_groups:
+        if len(target_groups)>0:
             answer += f"Your hate was probably directed towards {target_groups}."
 
     for key, value in image_scores.items():
