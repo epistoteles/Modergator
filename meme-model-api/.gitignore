@@ -5,5 +5,5 @@
 !main.py
 !requirements.txt
 !vilio
-!vilio/*
+!vilio/**
 
