@@ -61,7 +61,7 @@ You are done installing!
 
 ### ▶ Running the Telegram Bot
 
-You start the bot with:
+#### Start the bot:
 ```
 source run.sh
 ```
@@ -74,7 +74,8 @@ You should now see the following sessions running:
 -target-api
 -meme-model-api
 
-Error handling: in case not all screen sessions could start, you can activate the virtual environment again by typing
+#### Error handling
+in case not all screen sessions could start, you can activate the virtual environment again by typing
 ```
 source /veenv/bin/activate
 ```
