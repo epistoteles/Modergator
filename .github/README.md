@@ -22,11 +22,9 @@
 
 Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group. 
 
-Text messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given, as well as the targets that we have detected within the text (only if there are any). Voice messages are transcribed and then handled the same ways a text messages.
+Text messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given, as well as the targets that we have detected within the text (only if there are any). Voice messages are transcribed and then handled the same way as a text messages.
 
-Memes are also checked for hate. We first transcribe the
-
-Voice
+Memes are also checked for hate which arises due to the combination of text and an image.
 
 
 WARNING: The repository contains content that is offensive and/or hateful in nature.
@@ -38,18 +36,20 @@ There exists an option to opt out of the processing of messages for the group me
 
 ## 💡 How To Use
 
-In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
 As now, we have provided the following communication options with the bot:
-\help:
-\start:
-
+/help: this command lists all possible commands
+/start: The welcome message and the guidelines are displayed when a user joins and when this command is entered.
+/optout: The user is added to an optoutlis and their messages are not analyzed anymore (still in progress).
+/optin: The user's messages are analyzed again (still in progress).
+/poll: All group members can vote for their classification (still in progress).
 
 ## ⚙️ Installation
 
-For running the bot by your own, you will need to install several python packages and run different APIs handling different kinds of messages.
+For running the bot by your own, you will need to install the following python packages and run different APIs handling different kinds of messages.
 
 As torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you need to use python 3.8.
 
@@ -93,7 +93,7 @@ in case not all screen sessions could start, you can activate the virtual enviro
 ```
 source /veenv/bin/activate
 ```
-and then starting the corresponding python script. In case the text-api did not start correctly, you would enter
+and then starting the corresponding python script in the modergator folder. In case the text-api did not start correctly, you would enter
 ```
 python3 text-api/main.py
 ```  
