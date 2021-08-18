@@ -18,9 +18,16 @@
   <a href="#%EF%B8%8F-license">License</a>
 </p>
 
-# 🐊 Modergator - Hate Speech Detection
+# 🐊 Modergator - Hate Detection for Text, Speech and Memes
 
-Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group. The messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given. 
+Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group. 
+
+Text messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given, as well as the targets that we have detected within the text (only if there are any). Voice messages are transcribed and then handled the same ways a text messages.
+
+Memes are also checked for hate. We first transcribe the
+
+Voice
+
 
 WARNING: The repository contains content that is offensive and/or hateful in nature.
 
@@ -35,11 +42,16 @@ In order to interact with the bot, a Telegram account is needed. For instruction
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
+As now, we have provided the following communication options with the bot:
+\help:
+\start:
+
+
 ## ⚙️ Installation
 
 For running the bot by your own, you will need to install several python packages and run different APIs handling different kinds of messages.
 
-As torch 1.4.0 does not work with python versions later than 3.8, you need to use python 3.8.
+As torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you need to use python 3.8.
 
 First, you need to install the following dependencies:
 ```
@@ -60,6 +72,8 @@ This does the following:
 You are done installing!
 
 ### ▶ Running the Telegram Bot
+
+Important: running run.sh will kill all the screens you have currently active. If you don't want that, you have to comment it out. You have to then make sure to kill all the screens concerning the bot if you want to run run.sh again.
 
 #### Start the bot:
 ```
@@ -92,6 +106,8 @@ python3 meme-model-api/main.py
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
 
+Hint: Images that don't contain a text won't return a response.
+
 ### 📢 Voice API
 
 ### 🧍‍♂️ Target API
@@ -112,7 +128,8 @@ The best model is then used to predict the target groups of incoming telegram me
 -> the pth must be download [TODO: link] and placed into target-api/model
 
 ## ‎‍💻 Contributors
-The bot has been created in the Master's project at Universität Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection have been contributed by Niklas von Boguszewski and Fabian Rausch has helped us immensely building the target group detection model. Thank you!
+The bot has been created in the Master's project at Universität Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection have been contributed by Niklas von Boguszewski and Fabian Rausch has helped us immensely building the target group detection model. For the Meme API, we have used VILIO by Niklas Muennighoff.
+Thank you!
 
 ## ⚠️ License
 This repository has been licensed with MIT (see the file LICENSE).
