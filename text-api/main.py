@@ -30,10 +30,12 @@ class Classifier(Resource):
     categories = {0: 'hate', 1: 'normal', 2: 'offensive'}
 
     def get(self):
+        print("start")
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('text', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
         text = args['text']
+        print("text: ", text)
         inputs = self.tokenizer(text, return_tensors="pt")
         labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
         outputs = self.model(**inputs, labels=labels)
@@ -41,9 +43,9 @@ class Classifier(Resource):
         label = self.categories[np.argmax(scores)]
         print("SCORE LABEL: ", np.argmax(scores))
         print("SCORE LABEL INT", int(np.argmax(scores)))
-        return {'scores': json.dumps(scores),
-                'label': label,
+        return {'label': label,
                 'label_score': max(scores)}, 200
+                # 'scores': json.dumps(scores),
 
     def post(self):
         pass

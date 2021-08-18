@@ -187,21 +187,17 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     entities = update.message.parse_entities()
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
-            print(f'    Scoring caption image URL {value}')
-            score = score_image(value)['result']
-            image_scores[value] = score
-            image_ocr_text = score_image(value)['ocr_text']
+            print(f'Scoring caption image URL {value}')
+            score = score_image(value)
+            image_scores[value] = score['result']
+            image_ocr_text = score['ocr_text']
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
-    params = {"text": text}
-    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
-    print(r.json())
-    label = r.json()['label']
-    label_score = r.json()['label_score']
-    text_scores = json.loads(r.json()['scores'])
+    label, label_score = score_text(text)
+
     if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
-        target_groups = score_target(text) # a string with square brackets
+        target_groups = score_target(text)
         print("target_groups: ", target_groups)
         answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
         if len(target_groups)>0:
@@ -231,13 +227,12 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         file_path = context.bot.getFile(file_id).file_path
 
     text = voice_to_text(file_path)
-    label, text_scores = score_text(text)
+    label, label_score = score_text(text)
 
     target_groups = score_target(text)
 
     if label in ['hate', 'normal', 'offensive']:
-        answer += f"Your voice message was deemed {label}.\n"
-        answer += f"Scores (hate, normal, offensive): {str(text_scores)}.\n"
+        answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
         if len(target_groups)>0:
             answer += f"Your hate was probably directed towards {target_groups}."
         answer += f"This text has been recognised: {text}"
@@ -259,11 +254,15 @@ def handle_image(update: Update, context: CallbackContext) -> None:
             score = score_image(value)['result']
             image_scores[value] = score
 
+    """use hateXplain to evaluate the image caption and then evaluate the targets"""
     if update.message.caption:
         text = update.message.caption
-        label, text_scores = score_text(text)
-        if label in ['offensive', 'hate']:
-            answer += f"Your message was deemed {label}. Scores (hate, normal, offensive): {str(text_scores)}.\n"
+        label, label_score = score_text(text)
+        if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
+            target_groups = score_target(text)
+            answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
+            if len(target_groups)>0:
+                answer += f"Your hate was probably directed towards {target_groups}."
 
     # get file_path of image
     if update.message.document:
@@ -286,7 +285,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
 
     target_groups = score_target(image_ocr_text)
-    if target_groups: # KATRIN
+    if target_groups:
         answer += f"your hate was probably directed towards {target_groups}.\n"
 
     if answer:
@@ -294,6 +293,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
 
 def score_image(image_url):
+    print("Scoring image")
     """Receives image URL and return hatefulness score"""
     filename = image_url.split("/")[-1]
 
@@ -301,7 +301,7 @@ def score_image(image_url):
     params = {"path": image_url}
     r_ocr = requests.get(url=f"http://127.0.0.1:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
-    print(f'OCR text recognized: {ocr_text}')  # TODO: remove debug print
+    print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
     if r.status_code == 200:
@@ -316,15 +316,16 @@ def score_image(image_url):
 
 
 def score_text(text):
+    print("Scoring text: ", text)
     """Receives text string and returns label and label scores"""
     params = {"text": text}
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
-    print(r.json())
     label = r.json()['label']
-    text_scores = json.loads(r.json()['scores'])
-    return label, text_scores
+    label_score = r.json()['label_score']
+    return label, label_score
 
 def score_target(text):
+    print("Scoring target with text: ", text)
     params = {"text": text}
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['target-api']}/classifier", params=params)
     target_groups = json.dumps(r.json()['target_groups'])
