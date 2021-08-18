@@ -26,7 +26,7 @@ WARNING: The repository contains content that is offensive and/or hateful in nat
 
 ## 🎯 Key Features
 
-This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio), which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
+This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio) which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
 There exists an option to opt out of the processing of messages for the group members.
 
 ## 💡 How To Use
@@ -94,7 +94,7 @@ The detection of hatespeech for memes has been developed by Niklas Muennighoff (
 ### 📢 Voice API
 
 ### 🧍‍♂️ Target API
-#### How the target detection works
+#### How the Target Detection works
 
 The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
 The telegram bot runs the target detection for all kinds of messages.
@@ -103,8 +103,10 @@ The telegram bot runs the target detection for all kinds of messages.
 model.py --> the trained model
 main.py --> the target api that communicates with the bot and the model
 
-### Usage instructions TODO
-The trained model can be used to predict new input.
+### Target Detection Model TODO
+The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: TODO
+
+The best model is then used to predict the target groups of incoming telegram messages if they achieve a classification higher than the threshold 0.4 on the sigmoid of the output of the model prediction.
 
 -> the pth must be download [TODO: link] and placed into target-api/model
 
