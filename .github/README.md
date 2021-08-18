@@ -74,7 +74,7 @@ To run the bot you need to download the models and place them in the right folde
 * to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
 * to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth" 
 
-Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `key.txt` inside the main directory.
+Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the main directory.
 
 You are ready to run the bot!
 
