@@ -65,6 +65,7 @@ def help_command(update: Update, _: CallbackContext) -> None:
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
                               '/poll to discuss the classification [this feature is in progress]')
+                              #TODO die beschreibung was die scores bedeuten hinzufügen (und ins repo)
                               # TODO: /joke rein oder raus? (wenn raus: code löschen)
 
 def optout_command(update: Update, _: CallbackContext) -> None:
@@ -180,14 +181,16 @@ def handle_text(update: Update, _: CallbackContext) -> None:
 
     answer = ''
     image_scores = {}
+    image_ocr_text = ''
 
     """handle URLs"""
     entities = update.message.parse_entities()
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
             print(f'    Scoring caption image URL {value}')
-            score = score_image(value)
+            score = score_image(value)['result']
             image_scores[value] = score
+            image_ocr_text = score_image(value)['ocr_text']
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
@@ -199,8 +202,6 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     text_scores = json.loads(r.json()['scores'])
     if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
         target_groups = score_target(text) # a string with square brackets
-        target_groups = target_groups.strip("[]") # remove square brackets
-        target_groups = target_groups.strip('\"') # remove quotation marks
         print("target_groups: ", target_groups)
         answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
         if len(target_groups)>0:
@@ -208,6 +209,7 @@ def handle_text(update: Update, _: CallbackContext) -> None:
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
+        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
     #Access sender
     #sender = update.message.from_user
@@ -236,8 +238,8 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
     if label in ['hate', 'normal', 'offensive']:
         answer += f"Your voice message was deemed {label}.\n"
         answer += f"Scores (hate, normal, offensive): {str(text_scores)}.\n"
-        if target_groups:
-            answer += f"your hate was probably directed towards {target_groups}."
+        if len(target_groups)>0:
+            answer += f"Your hate was probably directed towards {target_groups}."
         answer += f"This text has been recognised: {text}"
     if answer:
         update.message.reply_text(answer)
@@ -254,7 +256,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
             print(f'    Scoring caption image URL {value}')
-            score = score_image(value)
+            score = score_image(value)['result']
             image_scores[value] = score
 
     if update.message.caption:
@@ -274,14 +276,17 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
     # score image
     print(f'    Scoring sent image URL {file_path}')
-    score = score_image(file_path)
+    score = score_image(file_path)['result'] #KATRIN
+    image_ocr_text = score_image(file_path)['ocr_text']
     image_scores['sent from your phone'] = score
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
+        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-    target_groups = score_target(text)
-    if target_groups:
+
+    target_groups = score_target(image_ocr_text)
+    if target_groups: # KATRIN
         answer += f"your hate was probably directed towards {target_groups}.\n"
 
     if answer:
@@ -295,7 +300,6 @@ def score_image(image_url):
     # include ocr-api, get extracted text which will be directed to text api
     params = {"path": image_url}
     r_ocr = requests.get(url=f"http://127.0.0.1:{PORTDICT['ocr-api']}/ocr", params=params)
-    print(r_ocr.json())
     ocr_text = r_ocr.json()['ocr_text']
     print(f'OCR text recognized: {ocr_text}')  # TODO: remove debug print
     params = {"image": image_url, "image_description": ocr_text}
@@ -308,7 +312,7 @@ def score_image(image_url):
        raise ConnectionError(r.status_code)
 
     data = r.json()
-    return data['result']
+    return {"result": data['result'], "ocr_text": ocr_text}
 
 
 def score_text(text):
@@ -324,6 +328,8 @@ def score_target(text):
     params = {"text": text}
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['target-api']}/classifier", params=params)
     target_groups = json.dumps(r.json()['target_groups'])
+    target_groups = target_groups.strip("[]") # remove square brackets
+    target_groups = target_groups.strip('\"') # remove quotation marks
     return target_groups
 
 def voice_to_text(voice_url):
