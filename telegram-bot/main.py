@@ -58,7 +58,7 @@ def start(update: Update, _: CallbackContext) -> None:
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
+    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group. A score is calculated for the messages indicating how certain my classification is. The score is between 0 (not sure at all) and 1 (very, very sure).\n'
                               'You can use the following commands:\n'
                               '/help to get an overview of the commands\n'
                               '/start to display the welcome message\n'
