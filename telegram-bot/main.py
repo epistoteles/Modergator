@@ -61,7 +61,7 @@ def help_command(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
                               'You can use the following commands:\n'
                               '/help to get an overview of the commands\n'
-                              '/start to display the welcome message'
+                              '/start to display the welcome message\n'
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
                               '/poll to discuss the classification [this feature is in progress]')
