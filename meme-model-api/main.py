@@ -1,10 +1,16 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import flask
 from flask import Flask
 from flask import request
 from flask import jsonify
-import flask
 from flask_restful import Resource, Api, reqparse
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_apispec.extension import FlaskApiSpec
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from marshmallow import Schema, fields
 import requests  # to get image from the web
 import shutil  # to save it locally
 import urllib
@@ -20,10 +26,19 @@ api = Api(app)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'}
 UPLOAD_FOLDER = '.meme-model-api/vilio/data/img'
 
+class ModelRequestSchema(Schema):
+    image = fields.Str(required=True, description="URL of an image. Allowed extensions are 'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'")
+    image_description = fields.Str(required=True, description="The text that is shown on the image.")
 
-class Model(Resource):
+class ModelResponseSchema(Schema):
+    result = fields.Str(description="0 = the meme is not hateful, 1 = the meme is hateful")
 
-    def post(self):
+class Model(MethodResource,Resource):
+
+    @doc(description='A model that judges the hatefulness of a meme.',  tags=['Meme Classification'])
+    @use_kwargs(ModelRequestSchema, location="form")
+    @marshal_with(ModelResponseSchema)
+    def post(self, **kwargs):
         src_dir = os.getcwd()
         image_url = request.form['image']
         image_description = request.form['image_description']
@@ -129,6 +144,20 @@ class APIImageError(Exception):
 api.add_resource(Model, '/classifier')
 
 port = pickle.load(open("portdict.pickle", "rb"))['meme-model-api']
+
+app.config.update({
+    'APISPEC_SPEC': APISpec(
+        title='Meme Model API',
+        version='v1',
+        plugins=[MarshmallowPlugin()],
+        openapi_version='2.0.0'
+    ),
+    'APISPEC_SWAGGER_URL': '/swagger/',  # URI to access API Doc JSON
+    'APISPEC_SWAGGER_UI_URL': '/swagger-ui/'  # URI to access UI of API Doc
+})
+docs = FlaskApiSpec(app)
+
+docs.register(Model)
 
 if __name__ == '__main__':
     app.run(port=port)
