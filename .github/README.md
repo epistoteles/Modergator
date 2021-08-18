@@ -115,3 +115,11 @@ The bot has been created in the Master's project at Universität Hamburg under t
 
 ## ⚠️ License
 This repository has been licensed with MIT (see the file LICENSE).
+
+## Dump: Below here old README concent to be deleted
+
+Go into meme-model-api/vilio/py-bottom-up-attention/ and run in a virtual evironment (source meme-model-api/memeenv/bin/activate) ```python3 setup.py build develop```. This will create a configs directory with files in vilio/py-bottom-up-attention/detectron2/model_zoo that is not pushed to git
+(because its user-specific) <---- now in install.py
+
+* to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
+* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth"  <---- not necessary any more, now uploaded to git with git-lfs
