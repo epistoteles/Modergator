@@ -36,7 +36,7 @@ There exists an option to opt out of the processing of messages for the group me
 
 ## 💡 How To Use
 
-In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure). In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
@@ -46,6 +46,7 @@ As now, we have provided the following communication options with the bot:
 /optout: The user is added to an optoutlis and their messages are not analyzed anymore (still in progress).
 /optin: The user's messages are analyzed again (still in progress).
 /poll: All group members can vote for their classification (still in progress).
+/scores: A short explanation on how to interpret the classification scores.
 
 ## ⚙️ Installation
 
@@ -69,7 +70,11 @@ This does the following:
 - download models that are too big for GitHub
 - install all Python dependencies
 
-You are done installing!
+To run the bot you need to download the models and place them in the right folders as described below:
+* to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
+* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth" 
+
+You are ready to run the bot!
 
 ### ▶ Running the Telegram Bot
 
@@ -105,10 +110,12 @@ python3 meme-model-api/main.py
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
+TODO longer description
 
 Hint: Images that don't contain a text won't return a response.
 
 ### 📢 Voice API
+TODO
 
 ### 🧍‍♂️ Target API
 #### How the Target Detection works
@@ -116,7 +123,7 @@ Hint: Images that don't contain a text won't return a response.
 The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
 The telegram bot runs the target detection for all kinds of messages.
 
-#### Folder description TODO
+#### Folder description
 model.py --> the trained model
 main.py --> the target api that communicates with the bot and the model
 
@@ -139,5 +146,4 @@ This repository has been licensed with MIT (see the file LICENSE).
 Go into meme-model-api/vilio/py-bottom-up-attention/ and run in a virtual evironment (source meme-model-api/memeenv/bin/activate) ```python3 setup.py build develop```. This will create a configs directory with files in vilio/py-bottom-up-attention/detectron2/model_zoo that is not pushed to git
 (because its user-specific) <---- now in install.py
 
-* to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
-* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth"  <---- not necessary any more, now uploaded to git with git-lfs
+ <---- not necessary any more, now uploaded to git with git-lfs
