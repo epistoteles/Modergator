@@ -19,23 +19,27 @@
 </p>
 
 # 🐊 Modergator - Hate Speech Detection
-Modergator is a Telegram bot who is able to process several kinds of messages send in a Telegram group. The messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given. There exists an option to optout of the processing of messages for the users of the group.
+
+Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group. The messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given. 
 
 WARNING: The repository contains content that is offensive and/or hateful in nature.
 
 ## 🎯 Key Features
 
-This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio), which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/).
+This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio), which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
+There exists an option to opt out of the processing of messages for the group members.
 
 ## 💡 How To Use
 
-In order to use the bot, a Telegram account is needed. For instructions on how to create an account, see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by typing a message in the text field. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
 ## ⚙️ Installation
 
-As torch 1.4.0 does not work with python versions later than 3.8, you need python 3.8.
+For running the bot by your own, you will need to install several python packages and run different APIs handling different kinds of messages.
+
+As torch 1.4.0 does not work with python versions later than 3.8, you need to use python 3.8.
 
 First, you need to install the following dependencies:
 ```
@@ -53,45 +57,59 @@ This does the following:
 - download models that are too big for GitHub
 - install all Python dependencies
 
+You are done installing!
 
-### Using the Telegram Bot
+### ▶ Running the Telegram Bot
 
-And then start the bot with
+You start the bot with:
 ```
 source run.sh
 ```
 This will start a virtual environment, install all dependencies inside it and start each program inside a screen session.
+You should now see the following sessions running:
+-telegram-bot
+-text-api
+-ocr-api
+-voice-api
+-target-api
+-meme-model-api
 
+Error handling: in case not all screen sessions could start, you can activate the virtual environment again by typing
+```
+source /veenv/bin/activate
+```
+and then starting the corresponding python script. In case the text-api did not start correctly, you would enter
+```
+python3 text-api/main.py
+```  
+to start the API manually. For the meme-model-api you type
+```
+source /memeenv/bin/activate
+python3 meme-model-api/main.py
+```
+### 🖼 Meme API
 
-### Meme API
+The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
 
-### Voice API
+### 📢 Voice API
 
-### Target API
+### 🧍‍♂️ Target API
 #### How the target detection works
 
-the target detection is based on HateXplain (for more information see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of discriminated target groups.
+The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
+The telegram bot runs the target detection for all kinds of messages.
 
-The telegram bot executes the target detection for all kinds of messages.
-
-###Folder description
+#### Folder description TODO
 model.py --> the trained model
 main.py --> the target api that communicates with the bot and the model
 
-### Usage instructions
+### Usage instructions TODO
 The trained model can be used to predict new input.
 
 -> the pth must be download [TODO: link] and placed into target-api/model
 
 ## ‎‍💻 Contributors
+The bot has been created in the Master's project at Universität Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection have been contributed by Niklas von Boguszewski and Fabian Rausch has helped us immensely building the target group detection model. Thank you!
 
 ## ⚠️ License
 This repository has been licensed with MIT (see the file LICENSE).
-
-## Dump: Below here old README concent to be deleted
-
-Go into meme-model-api/vilio/py-bottom-up-attention/ and run in a virtual evironment (source meme-model-api/memeenv/bin/activate) ```python3 setup.py build develop```. This will create a configs directory with files in vilio/py-bottom-up-attention/detectron2/model_zoo that is not pushed to git
-(because its user-specific) <---- now in install.py
-
-* to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
-* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth"  <---- not necessary any more, now uploaded to git with git-lfs
