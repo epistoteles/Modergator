@@ -51,21 +51,21 @@ def start(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown_v2(
-        fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\:wave: In this group hate speech is not tolerated\:x: Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor (https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf)\. To prevent and handle hate speech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. All messages send in this group are processed by me\. If you don't agree to this processing, please type /optout and your messages will not be processed\. Have fun, your Modergator \:crocodile:",
+        fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\. In this group hate speech is not tolerated\. Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor \(https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf\)\. To prevent and handle hate speech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. [this feature is in progress] All messages send in this group are processed by me\. If you don't agree to this processing, please type /optout and your messages will not be processed [this feature is in progress]\. Have fun, your Modergator\.",
         reply_markup=ForceReply(selective=True),
     )
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('I am Modergator \:crocodile: and keep an eye out for hateful messages in this group.'
-                              'You can use the following commands:'
-                              '/help to get an overview of the commands'
-                              '/joke to read a joke'
-                              '/optout to optout of thr processing of your messages'
-                              '/optin to opt-in again'
-                              '/poll to discuss the classification')
-
+    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
+                              'You can use the following commands:\n'
+                              '/help to get an overview of the commands\n'
+                              '/start to display the welcome message'
+                              '/optout to optout of the processing of your messages [this feature is in progress]\n'
+                              '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
+                              '/poll to discuss the classification [this feature is in progress]')
+                              # TODO: /joke rein oder raus? (wenn raus: code löschen)
 
 def optout_command(update: Update, _: CallbackContext) -> None:
     """Save user to opt-out list"""
@@ -200,8 +200,9 @@ def handle_text(update: Update, _: CallbackContext) -> None:
     if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
         target_groups = score_target(text) # a string with square brackets
         target_groups = target_groups.strip("[]") # remove square brackets
+        target_groups = target_groups.strip('\"') # remove quotation marks
         print("target_groups: ", target_groups)
-        answer += f"Your message was deemed {label}. Your {label} score was {label_score:.2f}.\n"
+        answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
         if len(target_groups)>0:
             answer += f"Your hate was probably directed towards {target_groups}."
 
