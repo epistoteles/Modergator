@@ -376,7 +376,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("joke", joke_command))
     dispatcher.add_handler(CommandHandler("poll", poll_command))
     dispatcher.add_handler(CommandHandler("optin", optin_command))
-    dispatcher.add_handler(CommandHandler("scores", optin_command))
+    dispatcher.add_handler(CommandHandler("scores", scores_command))
     dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
     dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
     dispatcher.add_handler(MessageHandler(Filters.poll, receive_poll))
