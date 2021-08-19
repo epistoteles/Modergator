@@ -13,8 +13,8 @@
   <a href="#-key-features">Key Features</a> •
   <a href="#-how-to-use">How To Use</a> •
   <a href="#%EF%B8%8F-installation">Installation</a> •
-  <a href="#components">Components</a> •
-  <a href="#-code-contributors">Contributors</a> •
+  <a href="#-components">Components</a> •
+  <a href="#-contributors">Contributors</a> •
   <a href="#%EF%B8%8F-license">License</a>
 </p>
 
@@ -50,9 +50,9 @@ As now, we have provided the following communication options with the bot:
 
 ## ⚙️ Installation
 
-For running the bot by your own, you will need to install the following python packages and run different APIs handling different kinds of messages.
+To host an instance of the bot on your own, you will need run both the bot itself as well as different APIs handling the kinds of messages.
 
-As torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you need to use python 3.8.
+As the dependency torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you need to use python 3.8. This guide assumes you already have python 3.8 set up.
 
 First, you need to install the following dependencies:
 ```
@@ -73,6 +73,8 @@ This does the following:
 To run the bot you need to download the models and place them in the right folders as described below:
 * to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
 * to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth" 
+
+Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the main directory.
 
 You are ready to run the bot!
 
@@ -107,6 +109,8 @@ to start the API manually. For the meme-model-api you type
 source /memeenv/bin/activate
 python3 meme-model-api/main.py
 ```
+## 🧱 Components
+
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
