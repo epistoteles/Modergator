@@ -58,13 +58,14 @@ def start(update: Update, _: CallbackContext) -> None:
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group. A score is calculated for the messages indicating how certain my classification is. The score is between 0 (not sure at all) and 1 (very, very sure).\n'
+    update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
                               'You can use the following commands:\n'
                               '/help to get an overview of the commands\n'
                               '/start to display the welcome message\n'
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
-                              '/poll to discuss the classification [this feature is in progress]')
+                              '/poll to discuss the classification [this feature is in progress]\n'
+                                '/scores to explain the classification scores')
                               #TODO die beschreibung was die scores bedeuten hinzufügen (und ins repo)
                               # TODO: /joke rein oder raus? (wenn raus: code löschen)
 
@@ -95,13 +96,18 @@ def optin_command(update: Update, _: CallbackContext) -> None:
             f'You have already opted in. To opt out, use the /optout command.')
 
 
+
+def scores_command(update: Update, _: CallbackContext) -> None:
+    """Return a description of the classification scores when the command /scores is issued."""
+    update.message.reply_text(f'A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure)')
+
+
 def joke_command(update: Update, _: CallbackContext) -> None:
     """Return a Chuck Norris dev joke when the command /joke is issued."""
     params = {"category": "dev"}
     r = requests.get(url='https://api.chucknorris.io/jokes/random', params=params)
     text = r.json()['value']
     update.message.reply_text(text)
-
 
 def goodvibes_command(update, context):
     """Return a good vibes meme when the command /goodvibes is issued."""
@@ -367,11 +373,12 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("joke", joke_command))
     dispatcher.add_handler(CommandHandler("optout", optout_command))
-    dispatcher.add_handler(CommandHandler("optin", optin_command))
-    dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
+    dispatcher.add_handler(CommandHandler("joke", joke_command))
     dispatcher.add_handler(CommandHandler("poll", poll_command))
+    dispatcher.add_handler(CommandHandler("optin", optin_command))
+    dispatcher.add_handler(CommandHandler("scores", optin_command))
+    dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
     dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
     dispatcher.add_handler(MessageHandler(Filters.poll, receive_poll))
 
