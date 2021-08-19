@@ -1,0 +1,4 @@
+
+git+https://github.com/facebookresearch/fvcore.git
+git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI
+

@@ -10,10 +10,13 @@ source meme-model-api/memeenv/bin/activate
 # install meme-model-api requirements
 pip3 install --upgrade pip
 pip3 install -r meme-model-api/requirements.txt
+pip3 install numpy==1.18.1 # to be sure that it is installed for requirements_git
+sleep 10
+pip3 install -r meme-model-api/requirements_git.txt
 pip3 install flask_apispec
 
 # create configs directory
-pip3 install numpy==1.18.1 # to be sure that it is installed for the setup
+
 cd meme-model-api/vilio/py-bottom-up-attention
 python3 setup.py build develop
 cd ../../..
@@ -28,7 +31,6 @@ source venv/bin/activate
 
 # install all python requirements
 pip3 install --upgrade pip
-pip3 install flask_apispec
 pip3 install -r requirements.txt
 pip3 install -r text-api/requirements.txt
 pip3 install -r ocr-api/requirements.txt

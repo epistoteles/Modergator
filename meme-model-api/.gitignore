@@ -4,6 +4,7 @@
 !.gitignore
 !main.py
 !requirements.txt
+!requirements_git.txt
 !vilio
 !vilio/**
 

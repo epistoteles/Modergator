@@ -43,8 +43,6 @@ torchcontrib==0.0.2
 
 cython
 opencv-python
-git+https://github.com/facebookresearch/fvcore.git
-git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI
 waitress==2.0.0
 flask==2.0.1
 flask_restful==0.3.9
