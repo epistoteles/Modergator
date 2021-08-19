@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/katrinc/hatefulmemes_2021/blob/main/.github/modergator.png" alt="Modergator" width="400">
+  <img src="https://github.com/Epistoteles/Modergator/blob/62e7fb1a4b162667d31f67f2c909e9aeed952fb4/.github/modergator.png" alt="Modergator" width="400">
 </div>
 
 <h4 align="center">Snapping back on hate speech</h4>
@@ -111,6 +111,10 @@ python3 meme-model-api/main.py
 ```
 ## 🧱 Components
 
+### Documentation
+
+We have documented our code with Swagger. The Swagger links will displayed in the terminal after running source run.sh. 
+ 
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
@@ -136,7 +140,7 @@ The target detection model uses the post id and token as well as the annotated t
 
 The best model is then used to predict the target groups of incoming telegram messages if they achieve a classification higher than the threshold 0.4 on the sigmoid of the output of the model prediction.
 
--> the pth must be download [TODO: link] and placed into target-api/model
+-> the pth must be downloaded [TODO: link] and placed into target-api/model
 
 ## ‎‍💻 Contributors
 The bot has been created in the Master's project at Universität Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection have been contributed by Niklas von Boguszewski and Fabian Rausch has helped us immensely building the target group detection model. For the Meme API, we have used VILIO by Niklas Muennighoff.
@@ -144,10 +148,3 @@ Thank you!
 
 ## ⚠️ License
 This repository has been licensed with MIT (see the file LICENSE).
-
-## Dump: Below here old README concent to be deleted
-
-Go into meme-model-api/vilio/py-bottom-up-attention/ and run in a virtual evironment (source meme-model-api/memeenv/bin/activate) ```python3 setup.py build develop```. This will create a configs directory with files in vilio/py-bottom-up-attention/detectron2/model_zoo that is not pushed to git
-(because its user-specific) <---- now in install.py
-
- <---- not necessary any more, now uploaded to git with git-lfs
