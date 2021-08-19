@@ -2,6 +2,12 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_apispec.extension import FlaskApiSpec
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from marshmallow import Schema, fields
 import json
 from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 import soundfile as sf
@@ -11,14 +17,23 @@ import pickle
 app = Flask(__name__)
 api = Api(app)
 
+class ASRClassifierRequestSchema(Schema):
+    text = fields.Str(required=True, description="A filename of a speech file, that has already been downloaded by the modergator bot.")
+
+class ASRClassifierResponseSchema(Schema):
+    target_groups = fields.Str(description="The transcription of the given speech file.")
+
 DATA_STUMP = 'data/'
 
-class ASR(Resource):
+class ASR(MethodResource,Resource):
 
     model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
     processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
-    def get(self):
+    @doc(description='A classifier that detects the target of a text.',  tags=['ASR Classification'])
+    @use_kwargs(ASRClassifierRequestSchema, location="querystring")
+    @marshal_with(ASRClassifierResponseSchema)
+    def get(self,**kwargs):
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('filename', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
@@ -45,18 +60,32 @@ class ASR(Resource):
 
         return {'transcription': transcription}, 200
 
-    def post(self):
-        pass
+    #def post(self):
+    #    pass
 
-    def put(self):
-        pass
+    #def put(self):
+    #    pass
 
-    def delete(self):
-        pass
+    #def delete(self):
+    #    pass
 
 api.add_resource(ASR, '/asr')  # add endpoints
 
 port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+
+app.config.update({
+    'APISPEC_SPEC': APISpec(
+        title='Audio Speech Recognition Classifier API [only usable for Modergator Bot]',
+        version='v1',
+        plugins=[MarshmallowPlugin()],
+        openapi_version='2.0.0'
+    ),
+    'APISPEC_SWAGGER_URL': '/swagger/',  # URI to access API Doc JSON
+    'APISPEC_SWAGGER_UI_URL': '/swagger-ui/'  # URI to access UI of API Doc
+})
+docs = FlaskApiSpec(app)
+
+docs.register(ASR)
 
 if __name__ == '__main__':
     app.run(port=port)  # run our Flask app

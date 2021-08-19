@@ -4,16 +4,25 @@ from model import TargetGroupModel
 #from transformers.file_utils import torch_required
 from flask import request
 import pickle
-#import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-#import json
-#import re
 from flask_restful import Resource, Api, reqparse
 from flask import Flask
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_apispec.extension import FlaskApiSpec
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from marshmallow import Schema, fields
 
 app = Flask(__name__)
 api = Api(app)
+
+class TargetClassifierRequestSchema(Schema):
+    text = fields.Str(required=True, description="A text.")
+
+class TargetClassifierResponseSchema(Schema):
+    target_groups = fields.Str(description="All target groups that have been detected (can be none : [])")
 
 # TODO: change mapping to the specific one (read from command line while training)
 id_to_target_group = {0: 'Buddhism', 1: 'Asexual', 2: 'Disability', 3: 'Arab', 4: 'Homosexual', 5: 'African', 6: 'Nonreligious', 7: 'Men', 8: 'Indian', 9: 'Jewish', 10: 'Asian', 11: 'Refugee', 12: 'Caucasian', 13: 'Indigenous', 14: 'Christian', 15: 'Women', 16: 'Heterosexual', 17: 'Bisexual', 18: 'Hindu', 19: 'Other', 20: 'Islam', 21: 'Minority', 22: 'Hispanic', 23: 'Economic'}
@@ -22,9 +31,12 @@ model.load_state_dict(torch.load("target-api/model/hate_target.pth",map_location
 model.eval()
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 
-class Target(Resource):
+class Target(MethodResource,Resource):
 
-    def get(self):
+    @doc(description='A classifier that detects the target of a text.',  tags=['Target Classification'])
+    @use_kwargs(TargetClassifierRequestSchema, location="querystring")
+    @marshal_with(TargetClassifierResponseSchema)
+    def get(self,**kwargs):
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('text', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
@@ -55,6 +67,20 @@ class Target(Resource):
 api.add_resource(Target, '/classifier')  # add endpoints
 
 port = pickle.load(open("portdict.pickle", "rb"))['target-api']
+
+app.config.update({
+    'APISPEC_SPEC': APISpec(
+        title='Target Classifier API',
+        version='v1',
+        plugins=[MarshmallowPlugin()],
+        openapi_version='2.0.0'
+    ),
+    'APISPEC_SWAGGER_URL': '/swagger/',  # URI to access API Doc JSON
+    'APISPEC_SWAGGER_UI_URL': '/swagger-ui/'  # URI to access UI of API Doc
+})
+docs = FlaskApiSpec(app)
+
+docs.register(Target)
 
 if __name__ == '__main__':
     app.run(port=port)  # run our Flask app

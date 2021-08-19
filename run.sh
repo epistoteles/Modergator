@@ -32,7 +32,7 @@ deactivate
 # print overview
 sleep 2
 screen -ls
-python3 -uc 'import portutil; portutil.print_ports()'
+python3 -uc 'import portutil; portutil.print_swagger_paths()' #portutil.print_ports()'
 
 # print useful commands:
 echo 'Useful commands:'
@@ -41,8 +41,7 @@ echo '  Attach to screen session:   screen -r ocr-api'
 echo '  Detach from screen session: Ctrl + A, D'
 echo '  Scrolling in screen:        Ctrl + A, esc -> up/down -> esc'
 
-# start tests
-
-#echo "Starting all tests in test_endpoints.py..."
+# runs all tests (and ignores the one in vilio)
+#echo "Running all api tests in test_endpoints.py..."
 #sleep 30
 #py.test --ignore=meme-model-api/vilio
