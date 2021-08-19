@@ -24,6 +24,16 @@ def print_ports():
         response += [f'  Using port {value} for service {key}']
     print('\n'.join(response))
 
+def print_swagger_paths():
+    response = []
+    try:
+        portdict = pickle.load(open("portdict.pickle", "rb"))
+    except (OSError, IOError) as e:
+        print('portdict.pickle does not exist')
+    for key, value in portdict.items():
+        response += [f'  Swagger doc on http://127.0.0.1:{value}/swagger-ui for service {key}']
+    print('\n'.join(response))
+
 
 def fill_portdict():
     print('Filling portdict and starting services ...')
