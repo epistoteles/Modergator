@@ -327,6 +327,7 @@ def score_text(text):
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
     label = r.json()['label']
     label_score = r.json()['label_score']
+    label_score = float(label_score)
     return label, label_score
 
 def score_target(text):
@@ -334,8 +335,11 @@ def score_target(text):
     params = {"text": text}
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['target-api']}/classifier", params=params)
     target_groups = json.dumps(r.json()['target_groups'])
+    print("scored targets: ", target_groups)
+    target_groups = target_groups.strip('\"') # remove quotation marks
     target_groups = target_groups.strip("[]") # remove square brackets
     target_groups = target_groups.strip('\"') # remove quotation marks
+    target_groups = target_groups.strip('\'') # remove quotation marks
     return target_groups
 
 def voice_to_text(voice_url):
