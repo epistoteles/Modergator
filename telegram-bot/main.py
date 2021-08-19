@@ -65,8 +65,7 @@ def help_command(update: Update, _: CallbackContext) -> None:
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
                               '/poll to discuss the classification [this feature is in progress]\n'
-                                '/scores to explain the classification scores')
-                              #TODO die beschreibung was die scores bedeuten hinzufügen (und ins repo)
+                              '/scores to explain the classification scores')
                               # TODO: /joke rein oder raus? (wenn raus: code löschen)
 
 def optout_command(update: Update, _: CallbackContext) -> None:
@@ -281,7 +280,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
     # score image
     print(f'    Scoring sent image URL {file_path}')
-    score = score_image(file_path)['result'] #KATRIN
+    score = score_image(file_path)['result']
     image_ocr_text = score_image(file_path)['ocr_text']
     image_scores['sent from your phone'] = score
 
