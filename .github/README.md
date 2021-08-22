@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/python-v3.8-blue.svg">
   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
 </div>
-  
+
 <p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#-how-to-use">How To Use</a> •
@@ -20,7 +20,7 @@
 
 # 🐊 Modergator - Hate Detection for Text, Speech and Memes
 
-Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group. 
+Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group.
 
 Text messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given, as well as the targets that we have detected within the text (only if there are any). Voice messages are transcribed and then handled the same way as a text messages.
 
@@ -56,7 +56,7 @@ As the dependency torch 1.4.0 (needed for the meme API) does not work with pytho
 
 First, you need to install the following dependencies:
 ```
-sudo apt-get -y install screen net-tools tesseract-ocr virtualenv
+sudo apt-get -y install screen net-tools tesseract-ocr virtualenv ffmpeg
 ```
 This is the only step for which you need sudo rights.
 
@@ -72,7 +72,7 @@ This does the following:
 
 To run the bot you need to download the models and place them in the right folders as described below:
 * to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
-* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth" 
+* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth"
 
 Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read messages.
 
@@ -113,8 +113,8 @@ python3 meme-model-api/main.py
 
 ### Documentation
 
-We have documented our code with Swagger. The Swagger links will displayed in the terminal after running source run.sh. 
- 
+We have documented our code with Swagger. The Swagger links will displayed in the terminal after running source run.sh.
+
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
