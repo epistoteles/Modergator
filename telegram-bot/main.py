@@ -48,6 +48,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+debug = False
+
 
 # Define a few command handlers. These usually take the two arguments update and context.
 def start_command(update: Update, _: CallbackContext) -> None:
@@ -84,6 +86,14 @@ def help_command(update: Update, _: CallbackContext) -> None:
                               '/poll to discuss the classification [this feature is in progress]\n'
                               '/scores to explain the classification scores\n'
                               '/joke to make me tell a joke')
+
+
+def debug_command(update: Update, _: CallbackContext) -> None:
+    """Always print lots of info for debugging purposes."""
+    global debug
+    debug = not debug
+    update.message.reply_text(f"Debug mode is now {'on' if debug else 'off'}.\n\n")
+
 
 def optout_command(update: Update, _: CallbackContext) -> None:
     """Save user to opt-out list"""
@@ -197,11 +207,12 @@ def receive_poll(update: Update, context: CallbackContext) -> None:
     )
 
 
-def handle_text(update: Update, _: CallbackContext) -> None:
+def handle_text(update: Update, context: CallbackContext) -> None:
     """Check text messages"""
     print('Handling text')
 
     answer = ''
+    debug_message = '*Debug information:*\n\n'
     image_scores = {}
     image_ocr_text = ''
 
@@ -216,14 +227,19 @@ def handle_text(update: Update, _: CallbackContext) -> None:
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
-    label, label_score = score_text(text)
+    label, label_score, scores = score_text(text)
 
-    if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
+    if label in ['offensive', 'hate']:
         target_groups = score_target(text)
         print("target_groups: ", target_groups)
-        answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
-        if len(target_groups)>0:
+        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this message is {label}. Please be nice and stick to the community guidelines.\n\nIf you think I made a mistake, use the /poll command to start a dispute.\n"
+        if len(target_groups) > 0:
             answer += f"Your hate was probably directed towards {target_groups}."
+    debug_message += f"``` Text scores:\n" \
+                     f"   hateful:   {scores[0]:.3f}\n" \
+                     f"   normal:    {scores[1]:.3f}\n" \
+                     f"   offensive: {scores[2]:.3f}\n" \
+                     f"```"
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
@@ -235,6 +251,15 @@ def handle_text(update: Update, _: CallbackContext) -> None:
 
     if answer:
         update.message.reply_text(answer)
+        if label_score > 0.8:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
+                                     chat_id=update.message.chat_id)
+        elif label_score > 0.6:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
+                                     chat_id=update.message.chat_id)
+    if debug:
+        debug_message += f'\nTo turn debug information off, type /debug\.'
+        context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
 
 
 
@@ -243,23 +268,40 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
     print('Handling voice')
 
     answer = ''
+    debug_message = '*Debug information:*\n\n'
 
     if update.message.voice:
         file_id = update.message.voice.file_id
         file_path = context.bot.getFile(file_id).file_path
 
     text = voice_to_text(file_path)
-    label, label_score = score_text(text)
+    label, label_score, scores = score_text(text)
 
     target_groups = score_target(text)
 
-    if label in ['hate', 'normal', 'offensive']:
-        answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
-        if len(target_groups)>0:
+    if label in ['hate', 'offensive']:
+        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this voice message is {label}. Please be nice and stick to the community guidelines."
+        if len(target_groups) > 0:
             answer += f"Your hate was probably directed towards {target_groups}."
-        answer += f"This text has been recognised: {text}"
+    debug_message += f"``` Transcribed text:\n" \
+                     f"   {text}\n" \
+                     f" Text scores:\n" \
+                     f"   hateful:   {scores[0]:.3f}\n" \
+                     f"   normal:    {scores[1]:.3f}\n" \
+                     f"   offensive: {scores[2]:.3f}\n" \
+                     f"```"
+
     if answer:
         update.message.reply_text(answer)
+        if label_score > 0.8:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
+                                     chat_id=update.message.chat_id)
+        elif label_score > 0.5:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
+                                     chat_id=update.message.chat_id)
+    if debug:
+        debug_message += f'\nTo turn debug information off, type /debug\.'
+        context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
 
 
 def handle_image(update: Update, context: CallbackContext) -> None:
@@ -279,7 +321,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     """use hateXplain to evaluate the image caption and then evaluate the targets"""
     if update.message.caption:
         text = update.message.caption
-        label, label_score = score_text(text)
+        label, label_score, _ = score_text(text)
         if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
             target_groups = score_target(text)
             answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
@@ -344,8 +386,12 @@ def score_text(text):
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
     label = r.json()['label']
     label_score = r.json()['label_score']
+    print(r.json()['scores'])
+    print(type(r.json()['scores']))
+    scores = [float(x) for x in json.loads(r.json()['scores'])]
     label_score = float(label_score)
-    return label, label_score
+    return label, label_score, scores
+
 
 def score_target(text):
     print("Scoring target with text: ", text)
@@ -358,6 +404,7 @@ def score_target(text):
     target_groups = target_groups.strip('\"') # remove quotation marks
     target_groups = target_groups.strip('\'') # remove quotation marks
     return target_groups
+
 
 def voice_to_text(voice_url):
     """Receives voice URL and returns text"""
@@ -399,6 +446,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("poll", poll_command))
     dispatcher.add_handler(CommandHandler("optin", optin_command))
     dispatcher.add_handler(CommandHandler("scores", scores_command))
+    dispatcher.add_handler(CommandHandler("debug", debug_command))
     dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
     dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
     dispatcher.add_handler(MessageHandler(Filters.poll, receive_poll))

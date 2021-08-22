@@ -23,8 +23,9 @@ class TextClassifierRequestSchema(Schema):
     text = fields.Str(required=True, description="A text.")
 
 class TextClassifierResponseSchema(Schema):
-    label = fields.Str(description="A label that is either normal, offensive or hateful")
-    label_score = fields.Str(description="A score that describes the confidence in the label (0-1)")
+    label = fields.Str(description="The winning label that is either normal, hateful or offensive")
+    label_score = fields.Str(description="A score that describes the confidence in the winning label [0,1]")
+    scores = fields.Str(description="The scores for all three labels: normal, hateful, offensive")
 
 class Classifier(MethodResource,Resource):
 
@@ -35,7 +36,7 @@ class Classifier(MethodResource,Resource):
     @doc(description='A classifier that judges the hatefulness of a text.',  tags=['Text Classification'])
     @use_kwargs(TextClassifierRequestSchema, location="querystring")
     @marshal_with(TextClassifierResponseSchema)
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         print("start")
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('text', required=True)  # add args
@@ -50,7 +51,8 @@ class Classifier(MethodResource,Resource):
         print("SCORE LABEL: ", np.argmax(scores))
         print("SCORE LABEL INT", int(np.argmax(scores)))
         return {'label': label,
-                'label_score': max(scores)}, 200
+                'label_score': max(scores),
+                'scores': scores}, 200
                 # 'scores': json.dumps(scores),
 
     #def post(self):
