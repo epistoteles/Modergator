@@ -49,16 +49,28 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments update and
-# context.
-def start(update: Update, _: CallbackContext) -> None:
+# Define a few command handlers. These usually take the two arguments update and context.
+def start_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
-    user = update.effective_user
-    update.message.reply_markdown_v2(
-        fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\. In this group hate speech is not tolerated\. Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor \(https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf\)\. To prevent and handle hate speech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. [this feature is in progress] All messages send in this group are processed by me\. If you don't agree to this processing, please type /optout and your messages will not be processed [this feature is in progress]\. Have fun, your Modergator\.",
-        reply_markup=ForceReply(selective=True),
-    )
+    user = update.effective_user.name
+    message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages. I will process everything, but never store any user content permanently. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message."
+    update.message.reply_text(message)
     update.message.reply_sticker('CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE')
+
+
+def about_command(update: Update, _: CallbackContext) -> None:
+    """Give more information about hate speech and the bot for the command /about."""
+    message = f"Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factors (https://www.un.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS.pdf).\n\nTo prevent and handle hate speech, I classify each message, image and voice message and intervene if it was considered hateful or offensive. If you don't agree with my classification, you can type /poll to discuss the result with other group members (this feature is still in development). All messages sent in this group are processed (but never stored permanently) by me. If you don't agree to this processing, please type /optout and your messages will not be processed any more.\n\nHave fun and be nice!"
+    update.message.reply_text(message)
+
+
+def welcome_message(update: Update, context: CallbackContext) -> None:
+    group = update.effective_chat.title
+    users = ", ".join([x.name for x in update.message.new_chat_members if not x.is_bot])
+    message = f"Hello {users} and welcome to {group}! I am Modergator and keep an eye out for hateful content in this group. This means I am reading, seeing and listening to (but never storing) everything you and others write, send or speak.\n\nIf you don’t want me to process and moderate your data, please /optout.\n\nLearn more about hate speech here: /about."
+    if users:
+        context.bot.send_message(text=message, chat_id=update.message.chat_id)
+        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE', chat_id=update.message.chat_id)
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -379,7 +391,8 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("start", start_command))
+    dispatcher.add_handler(CommandHandler("about", about_command))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("optout", optout_command))
     dispatcher.add_handler(CommandHandler("joke", joke_command))
@@ -389,6 +402,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
     dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
     dispatcher.add_handler(MessageHandler(Filters.poll, receive_poll))
+    dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcome_message))
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_text))
