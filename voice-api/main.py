@@ -18,7 +18,7 @@ app = Flask(__name__)
 api = Api(app)
 
 class ASRClassifierRequestSchema(Schema):
-    text = fields.Str(required=True, description="A filename of a speech file, that has already been downloaded by the modergator bot.")
+    text = fields.Str(required=True, description="A filename of an .oga speech file that has already been downloaded by the modergator bot.")
 
 class ASRClassifierResponseSchema(Schema):
     target_groups = fields.Str(description="The transcription of the given speech file.")
@@ -33,7 +33,7 @@ class ASR(MethodResource,Resource):
     @doc(description='A classifier that detects the target of a text.',  tags=['ASR Classification'])
     @use_kwargs(ASRClassifierRequestSchema, location="querystring")
     @marshal_with(ASRClassifierResponseSchema)
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         parser = reqparse.RequestParser()  # initialize
         parser.add_argument('filename', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
@@ -47,7 +47,6 @@ class ASR(MethodResource,Resource):
             ['ffmpeg', '-y', '-i', f'{stump}{filename}.oga', '-ar', '16000', f'{stump}{filename}.wav'])
 
         audio, sr = sf.read(f'{stump}{filename}.wav')
-
         input_features = self.processor(
             audio,
             sampling_rate=16000,
