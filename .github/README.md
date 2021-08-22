@@ -74,7 +74,7 @@ To run the bot you need to download the models and place them in the right folde
 * to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
 * to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth" 
 
-Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory.
+Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read messages.
 
 You are ready to run the bot!
 
@@ -130,10 +130,6 @@ TODO
 
 The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
 The telegram bot runs the target detection for all kinds of messages.
-
-#### Folder description
-model.py --> the trained model
-main.py --> the target api that communicates with the bot and the model
 
 ### Target Detection Model TODO
 The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: TODO
