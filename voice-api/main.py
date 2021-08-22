@@ -75,7 +75,7 @@ api.add_resource(ASR, '/asr')  # add endpoints
 if os.path.isfile("portdict.pickle"):
     port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
 else:
-    port=80
+    port = 80
 
 app.config.update({
     'APISPEC_SPEC': APISpec(

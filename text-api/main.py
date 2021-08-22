@@ -65,7 +65,11 @@ class Classifier(MethodResource,Resource):
 
 api.add_resource(Classifier, '/classifier')  # add endpoints
 
-port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+# check if project is run with scripts or docker and assign ports
+if os.path.isfile("portdict.pickle"):
+    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+else:
+    port = 80
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
