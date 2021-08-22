@@ -1,0 +1,24 @@
+version: "3.3"
+services:
+  meme-model-api:
+    build: meme-model-api
+    ports:
+      - "5001:80"
+  text-api:
+    build: text-api
+    ports:
+        - "5002:80"
+  ocr-api:
+    build: ocr-api
+    ports:
+        - "5003:80"
+  voice-api:
+    build: voice-api
+    ports:
+        - "5004:80"
+  target-api:
+    build: target-api
+    ports:
+        - "5005:80"
+  telegram-bot:
+    build: telegram-bot

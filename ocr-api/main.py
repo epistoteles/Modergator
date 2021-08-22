@@ -34,20 +34,13 @@ class OCR(MethodResource,Resource):
         ocr_text = ocr.do_ocr(path, custom_config = r'--oem 1 --psm 8')
         return {'ocr_text': ocr_text}, 200
 
-
-    #def post(self):
-    #    pass
-
-    #def put(self):
-    #    pass
-
-    #def delete(self):
-    #    pass
-
-
 api.add_resource(OCR, '/ocr')  # add endpoints
 
-port = pickle.load(open("portdict.pickle", "rb"))['ocr-api']
+# check if project is run with scripts or docker and assign ports
+if os.path.isfile("portdict.pickle"):
+    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+else:
+    port=80
 
 app.config.update({
     'APISPEC_SPEC': APISpec(

@@ -34,8 +34,12 @@ print("TOKEN", TOKEN)
 IMAGE_THRESHOLD = 0.5
 TEXT_THRESHOLD = 0.5
 DATA_STUMP = 'data/'
-PORTDICT = pickle.load(open("portdict.pickle", "rb"))
 
+# use ports of portdict or docker ports
+if os.path.isfile("portdict.pickle"):
+    PORTDICT = pickle.load(open("portdict.pickle", "rb"))
+else:
+    PORTDICT = {"meme-model-api":5001, "text-api":5002, "ocr-api": 5003, "voice-api": 5004, "target-api":5005}
 
 # Enable logging
 logging.basicConfig(

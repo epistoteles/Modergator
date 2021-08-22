@@ -66,8 +66,6 @@ class Target(MethodResource,Resource):
 
 api.add_resource(Target, '/classifier')  # add endpoints
 
-port = pickle.load(open("portdict.pickle", "rb"))['target-api']
-
 app.config.update({
     'APISPEC_SPEC': APISpec(
         title='Target Classifier API',
@@ -81,6 +79,12 @@ app.config.update({
 docs = FlaskApiSpec(app)
 
 docs.register(Target)
+
+# check if project is run with scripts or docker and assign ports
+if os.path.isfile("portdict.pickle"):
+    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+else:
+    port=80
 
 if __name__ == '__main__':
     app.run(port=port)  # run our Flask app

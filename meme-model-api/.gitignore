@@ -5,6 +5,8 @@
 !main.py
 !requirements.txt
 !requirements_git.txt
+!base-requirements.txt
+!Dockerfile
 !vilio
 !vilio/**
 

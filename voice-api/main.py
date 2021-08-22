@@ -71,7 +71,11 @@ class ASR(MethodResource,Resource):
 
 api.add_resource(ASR, '/asr')  # add endpoints
 
-port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+# check if project is run with scripts or docker and assign ports
+if os.path.isfile("portdict.pickle"):
+    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+else:
+    port=80
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
