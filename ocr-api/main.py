@@ -38,7 +38,7 @@ api.add_resource(OCR, '/ocr')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['ocr-api']
 else:
     port=80
 
@@ -57,5 +57,4 @@ docs = FlaskApiSpec(app)
 docs.register(OCR)
 
 if __name__ == '__main__':
-
     app.run(port=port)  # run our Flask app

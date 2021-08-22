@@ -82,7 +82,7 @@ docs.register(Target)
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['target-api']
 else:
     port=80
 
