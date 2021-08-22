@@ -58,6 +58,7 @@ def start(update: Update, _: CallbackContext) -> None:
         fr"Hello {user.mention_markdown_v2()}\! Welcome to this group\. In this group hate speech is not tolerated\. Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factor \(https\://www\.un\.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS\.pdf\)\. To prevent and handle hate speech, I classify each message and image and notify you if it was considered hateful or offensive\. If you don't agree with the classification, you can type /poll to discuss the result with the group members\. [this feature is in progress] All messages send in this group are processed by me\. If you don't agree to this processing, please type /optout and your messages will not be processed [this feature is in progress]\. Have fun, your Modergator\.",
         reply_markup=ForceReply(selective=True),
     )
+    update.message.reply_sticker()
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
