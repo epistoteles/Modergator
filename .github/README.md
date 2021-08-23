@@ -43,8 +43,8 @@ You don't want the bot to process your messages? Just type /optout and your mess
 As now, we have provided the following communication options with the bot:
 /help: this command lists all possible commands
 /start: The welcome message and the guidelines are displayed when a user joins and when this command is entered.
-/optout: The user is added to an optoutlis and their messages are not analyzed anymore (still in progress).
-/optin: The user's messages are analyzed again (still in progress).
+/optout: The user is added to an optoutlis and their messages are not analyzed anymore.
+/optin: The user's messages are analyzed again.
 /poll: All group members can vote for their classification (still in progress).
 /scores: A short explanation on how to interpret the classification scores.
 
