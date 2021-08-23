@@ -219,8 +219,8 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     """handle URLs"""
     entities = update.message.parse_entities()
     for key, value in entities.items():
-        if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): #TODO: warum nur diese Endungen?
-            answer, score, image_ocr_test, image_scores = return_score_url(value, answer, image_ocr_test, image_scores)
+        if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
+            answer, score, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
@@ -279,7 +279,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         raise NotImplementedError('Image type not implemented')
 
     # score image
-    answer,score, image_ocr_test, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
+    answer,score, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
 
     target_groups = score_target(image_ocr_text)
     if target_groups:
@@ -308,17 +308,17 @@ def return_score_text_and_target(text,answer,debug_message,type):
                      f"```"
     return answer, debug_message, label_score
 
-def return_score_url(file_path, answer, image_ocr_test, image_scores):
+def return_score_url(file_path, answer, image_ocr_text, image_scores):
     print(f'    Scoring sent image URL {file_path}')
     score = score_image(file_path)['result']
     image_ocr_text = score_image(file_path)['ocr_text']
-    image_scores['sent from your phone'] = score #TODO: warum phone? kann auch telegram web sein!
+    image_scores['sent from your device'] = score
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-    return answer, score, image_ocr_test, image_scores
+    return answer, score, image_ocr_text, image_scores
 
 def answer_bot(answer, label_score, debug_message, context, update):
     if answer:
