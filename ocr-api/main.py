@@ -10,6 +10,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
 import ocr
+import analysis_utility
 
 app = Flask(__name__)
 api = Api(app)
