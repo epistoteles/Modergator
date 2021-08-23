@@ -29,6 +29,9 @@ screen -L -S telegram-bot -d -m python3 telegram-bot/main.py
 # deactivate venv
 deactivate
 
+# wait for the screens to fully function
+sleep 15
+
 # print overview
 sleep 2
 screen -ls
