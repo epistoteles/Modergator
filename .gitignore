@@ -150,3 +150,6 @@ meme-model-api/vilio/py-bottom-up-attention/detectron2/model_zoo/configs
 
 # ignore txt file with telegram bot token
 telegram-bot/telegram_bot_token.txt
+
+#ignore the optoulist
+optoutlist.pickle
