@@ -278,7 +278,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
     target_groups = score_target(image_ocr_text)
     if target_groups:
-        answer += f"your hate was probably directed towards {target_groups}.\n"
+        answer += f"your hate was probably directed towards the following group(s): {target_groups}.\n"
 
     if answer:
         update.message.reply_text(answer)
@@ -287,11 +287,12 @@ def return_score_text_and_target(text,answer,debug_message,type):
 
     label, label_score, scores = score_text(text)
     if label in ['offensive', 'hate']:
-        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\nIf you think I made a mistake, use the /poll command to start a dispute.\n\n"
+        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\n"
         target_groups = score_target(text)
         print("target_groups: ", target_groups)
         if len(target_groups) > 0:
-            answer += f"Your hate was probably directed towards {target_groups}."
+            answer += f"Your hate was probably directed towards the following group(s): {target_groups}.\n\n"
+        answer += f"If you think I made a mistake, use the /poll command to start a dispute.\n\n"
     if(type=="voice"):
         debug_message += f"``` Transcribed text:\n" \
                          f"   {text}\n" \
