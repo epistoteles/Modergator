@@ -112,7 +112,6 @@ def optout_command(update: Update, _: CallbackContext) -> None:
 def optin_command(update: Update, _: CallbackContext) -> None:
     """Remove user from opt-out list"""
     user = update.effective_user
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
     if user.id in optoutlist:
         optoutlist.remove(user.id)
         pickle.dump(optoutlist, open('optoutlist.pickle', 'wb'))
@@ -210,9 +209,9 @@ def receive_poll(update: Update, context: CallbackContext) -> None:
 
 def handle_text(update: Update, context: CallbackContext) -> None:
     """Check text messages only if user not in optout"""
-    print(optoutlist)
-    print(update.effective_user.name)
-    if (update.effective_user.name not in optoutlist):
+
+    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    if (update.effective_user.id not in optoutlist):
 
         print('Handling text')
 
@@ -241,7 +240,7 @@ def handle_text(update: Update, context: CallbackContext) -> None:
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
-    if (update.effective_user.name not in optoutlist):
+    if (update.effective_user.id not in optoutlist):
 
         print('Handling voice')
 
@@ -261,7 +260,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         pass
 def handle_image(update: Update, context: CallbackContext) -> None:
     """Check images and their caption"""
-    if (update.effective_user.name not in optoutlist):
+    if (update.effective_user.id not in optoutlist):
         print('Handling image')
 
         answer = ''
