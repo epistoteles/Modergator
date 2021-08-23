@@ -1,6 +1,10 @@
 import pytesseract
 
+<<<<<<< HEAD
 #pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
+=======
+pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
+>>>>>>> added all relevant files of Niklas
 
 def image_to_text(croped_images, custom_config):
     
@@ -30,4 +34,8 @@ def image_to_text(croped_images, custom_config):
         if i != len(text_all) -1:
             text += ' '
     
+<<<<<<< HEAD
     return text[:-1], conf
+=======
+    return text[:-1], conf
+>>>>>>> added all relevant files of Niklas

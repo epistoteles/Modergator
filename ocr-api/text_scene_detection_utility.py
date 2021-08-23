@@ -9,16 +9,25 @@ import model.imgproc as imgproc
 import cv2
 from torch.autograd import Variable
 from operator import itemgetter
+<<<<<<< HEAD
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+=======
+>>>>>>> added all relevant files of Niklas
 
 def build_model():
     # load net
     net = CRAFT()     # initialize
 
     # Load weights
+<<<<<<< HEAD
     net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
 
     net = net.to(device)
+=======
+    net.load_state_dict(copyStateDict(torch.load('model/craft_mlt_25k.pth')))
+
+    net = net.cuda()
+>>>>>>> added all relevant files of Niklas
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = False
     
@@ -36,8 +45,13 @@ def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, p
     x = imgproc.normalizeMeanVariance(img_resized)
     x = torch.from_numpy(x).permute(2, 0, 1)    # [h, w, c] to [c, h, w]
     x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
+<<<<<<< HEAD
     #if cuda:
     #    x = x.cuda()
+=======
+    if cuda:
+        x = x.cuda()
+>>>>>>> added all relevant files of Niklas
 
     # forward pass
     with torch.no_grad():
@@ -83,4 +97,8 @@ def copyStateDict(state_dict):
     for k, v in state_dict.items():
         name = ".".join(k.split(".")[start_idx:])
         new_state_dict[name] = v
+<<<<<<< HEAD
     return new_state_dict
+=======
+    return new_state_dict
+>>>>>>> added all relevant files of Niklas
