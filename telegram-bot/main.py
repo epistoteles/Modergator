@@ -219,49 +219,18 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     """handle URLs"""
     entities = update.message.parse_entities()
     for key, value in entities.items():
-        if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
-            print(f'Scoring caption image URL {value}')
-            score = score_image(value)
-            image_scores[value] = score['result']
-            image_ocr_text = score['ocr_text']
+        if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): #TODO: warum nur diese Endungen?
+            answer, score, image_ocr_test, image_scores = return_score_url(value, answer, image_ocr_test, image_scores)
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
-    label, label_score, scores = score_text(text)
-
-    if label in ['offensive', 'hate']:
-        target_groups = score_target(text)
-        print("target_groups: ", target_groups)
-        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this message is {label}. Please be nice and stick to the community guidelines.\n\nIf you think I made a mistake, use the /poll command to start a dispute.\n"
-        if len(target_groups) > 0:
-            answer += f"Your hate was probably directed towards {target_groups}."
-    debug_message += f"``` Text scores:\n" \
-                     f"   hateful:   {scores[0]:.3f}\n" \
-                     f"   normal:    {scores[1]:.3f}\n" \
-                     f"   offensive: {scores[2]:.3f}\n" \
-                     f"```"
+    answer, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-    #Access sender
-    #sender = update.message.from_user
-    #answer += f'The message was send by {sender}.\n'
-
-    if answer:
-        update.message.reply_text(answer)
-        if label_score > 0.8:
-            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
-                                     chat_id=update.message.chat_id)
-        elif label_score > 0.6:
-            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
-                                     chat_id=update.message.chat_id)
-    if debug:
-        debug_message += f'\nTo turn debug information off, type /debug\.'
-        context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
-
-
+    answer_bot(answer, label_score, debug_message, context, update)
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
@@ -275,41 +244,18 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         file_path = context.bot.getFile(file_id).file_path
 
     text = voice_to_text(file_path)
-    label, label_score, scores = score_text(text)
+    answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
 
-    target_groups = score_target(text)
-
-    if label in ['hate', 'offensive']:
-        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this voice message is {label}. Please be nice and stick to the community guidelines."
-        if len(target_groups) > 0:
-            answer += f"Your hate was probably directed towards {target_groups}."
-    debug_message += f"``` Transcribed text:\n" \
-                     f"   {text}\n" \
-                     f" Text scores:\n" \
-                     f"   hateful:   {scores[0]:.3f}\n" \
-                     f"   normal:    {scores[1]:.3f}\n" \
-                     f"   offensive: {scores[2]:.3f}\n" \
-                     f"```"
-
-    if answer:
-        update.message.reply_text(answer)
-        if label_score > 0.8:
-            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
-                                     chat_id=update.message.chat_id)
-        elif label_score > 0.5:
-            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
-                                     chat_id=update.message.chat_id)
-    if debug:
-        debug_message += f'\nTo turn debug information off, type /debug\.'
-        context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
-
+    answer_bot(answer, label_score, debug_message, context, update)
 
 def handle_image(update: Update, context: CallbackContext) -> None:
     """Check images and their caption"""
     print('Handling image')
 
     answer = ''
+    debug_message = '*Debug information:*\n\n'
     image_scores = {}
+    image_ocr_text = ''
 
     entities = update.message.parse_caption_entities()
     for key, value in entities.items():
@@ -321,12 +267,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     """use hateXplain to evaluate the image caption and then evaluate the targets"""
     if update.message.caption:
         text = update.message.caption
-        label, label_score, _ = score_text(text)
-        if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
-            target_groups = score_target(text)
-            answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
-            if len(target_groups)>0:
-                answer += f"Your hate was probably directed towards {target_groups}."
+        answer, debug_message, label_score = return_return_score_text_and_targetscore_text(text,answer,debug_message,"caption")
 
     # get file_path of image
     if update.message.document:
@@ -338,15 +279,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         raise NotImplementedError('Image type not implemented')
 
     # score image
-    print(f'    Scoring sent image URL {file_path}')
-    score = score_image(file_path)['result']
-    image_ocr_text = score_image(file_path)['ocr_text']
-    image_scores['sent from your phone'] = score
-
-    for key, value in image_scores.items():
-        answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
-        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
-
+    answer,score, image_ocr_test, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
 
     target_groups = score_target(image_ocr_text)
     if target_groups:
@@ -355,6 +288,50 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     if answer:
         update.message.reply_text(answer)
 
+def return_score_text_and_target(text,answer,debug_message,type):
+
+    label, label_score, scores = score_text(text)
+    if label in ['offensive', 'hate']:
+        answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\nIf you think I made a mistake, use the /poll command to start a dispute.\n\n"
+        target_groups = score_target(text)
+        print("target_groups: ", target_groups)
+        if len(target_groups) > 0:
+            answer += f"Your hate was probably directed towards {target_groups}."
+    if(type=="voice"):
+        debug_message += f"``` Transcribed text:\n" \
+                         f"   {text}\n" \
+                         f"```"
+    debug_message += f"``` Text scores:\n" \
+                     f"   hateful:   {scores[0]:.3f}\n" \
+                     f"   normal:    {scores[1]:.3f}\n" \
+                     f"   offensive: {scores[2]:.3f}\n" \
+                     f"```"
+    return answer, debug_message, label_score
+
+def return_score_url(file_path, answer, image_ocr_test, image_scores):
+    print(f'    Scoring sent image URL {file_path}')
+    score = score_image(file_path)['result']
+    image_ocr_text = score_image(file_path)['ocr_text']
+    image_scores['sent from your phone'] = score #TODO: warum phone? kann auch telegram web sein!
+
+    for key, value in image_scores.items():
+        answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
+        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
+
+    return answer, score, image_ocr_test, image_scores
+
+def answer_bot(answer, label_score, debug_message, context, update):
+    if answer:
+        update.message.reply_text(answer)
+        if label_score > 0.8:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
+                                     chat_id=update.message.chat_id)
+        elif label_score > 0.5:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
+                                     chat_id=update.message.chat_id)
+    if debug:
+        debug_message += f'\nTo turn debug information off, type /debug\.'
+        context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
 
 def score_image(image_url):
     print("Scoring image")
@@ -376,7 +353,7 @@ def score_image(image_url):
        raise ConnectionError(r.status_code)
 
     data = r.json()
-    return {"result": data['result'], "ocr_text": ocr_text}
+    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dic und nicht die variablen?
 
 
 def score_text(text):
@@ -398,11 +375,11 @@ def score_target(text):
     params = {"text": text}
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['target-api']}/classifier", params=params)
     target_groups = json.dumps(r.json()['target_groups'])
+    target_groups = target_groups.replace('\"', '')
+    target_groups = target_groups.replace('\'', '')
+    target_groups = target_groups.replace('[', '')
+    target_groups = target_groups.replace(']', '')
     print("scored targets: ", target_groups)
-    target_groups = target_groups.strip('\"') # remove quotation marks
-    target_groups = target_groups.strip("[]") # remove square brackets
-    target_groups = target_groups.strip('\"') # remove quotation marks
-    target_groups = target_groups.strip('\'') # remove quotation marks
     return target_groups
 
 
