@@ -240,7 +240,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         file_path = context.bot.getFile(file_id).file_path
 
     text = voice_to_text(file_path)
-    answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
+    answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
     answer_bot(answer, label_score, debug_message, context, update)
 
@@ -262,7 +262,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     """use hateXplain to evaluate the image caption and then evaluate the targets"""
     if update.message.caption:
         text = update.message.caption
-        answer, debug_message, label_score = return_return_score_text_and_targetscore_text(text,answer,debug_message,"caption")
+        answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"caption")
 
     # get file_path of image
     if update.message.document:
@@ -292,7 +292,7 @@ def return_score_text_and_target(text,answer,debug_message,type):
         if len(target_groups) > 0:
             answer += f"Your hate was probably directed towards the following group(s): {target_groups}.\n\n"
         answer += f"If you think I made a mistake, use the /poll command to start a dispute.\n\n"
-    if(type=="voice"):
+    if(type=="asr"):
         debug_message += f"``` Transcribed text:\n" \
                          f"   {text}\n" \
                          f"```"
