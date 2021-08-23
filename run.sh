@@ -22,7 +22,7 @@ source venv/bin/activate
 # start all python components in their own screen session
 screen -L -S text-api -d -m python3 text-api/main.py
 screen -L -S ocr-api -d -m python3 ocr-api/main.py
-screen -L -S voice-api -d -m python3 voice-api/main.py
+screen -L -S asr-api -d -m python3 asr-api/main.py
 screen -L -S target-api -d -m python3 target-api/main.py
 screen -L -S telegram-bot -d -m python3 telegram-bot/main.py
 

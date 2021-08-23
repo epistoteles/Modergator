@@ -39,7 +39,7 @@ DATA_STUMP = 'data/'
 if os.path.isfile("portdict.pickle"):
     PORTDICT = pickle.load(open("portdict.pickle", "rb"))
 else:
-    PORTDICT = {"meme-model-api":5001, "text-api":5002, "ocr-api": 5003, "voice-api": 5004, "target-api":5005}
+    PORTDICT = {"meme-model-api":5001, "text-api":5002, "ocr-api": 5003, "asr-api": 5004, "target-api":5005}
 
 # Enable logging
 logging.basicConfig(
@@ -391,7 +391,7 @@ def voice_to_text(voice_url):
         raise ConnectionError(r.status_code)
 
     params = {"filename": filename}
-    r_asr = requests.get(url=f"http://127.0.0.1:{PORTDICT['voice-api']}/asr", params=params)
+    r_asr = requests.get(url=f"http://127.0.0.1:{PORTDICT['asr-api']}/asr", params=params)
     transcription = r_asr.json()['transcription']
     for f in glob.glob(f'{DATA_STUMP}voice/*'):
         os.remove(f)
