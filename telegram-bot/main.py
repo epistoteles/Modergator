@@ -50,6 +50,7 @@ logger = logging.getLogger(__name__)
 
 debug = False
 
+optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
 
 # Define a few command handlers. These usually take the two arguments update and context.
 def start_command(update: Update, _: CallbackContext) -> None:
@@ -208,44 +209,71 @@ def receive_poll(update: Update, context: CallbackContext) -> None:
 
 
 def handle_text(update: Update, context: CallbackContext) -> None:
-    """Check text messages"""
-    print('Handling text')
+    """Check text messages only if user not in optout"""
+    print(optoutlist)
+    print(update.effective_user.name)
+    if (update.effective_user.name not in optoutlist):
 
-    answer = ''
-    debug_message = '*Debug information:*\n\n'
-    image_scores = {}
-    image_ocr_text = ''
+        print('Handling text')
 
+<<<<<<< HEAD
     """handle URLs"""
     entities = update.message.parse_entities()
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
             answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+=======
+        answer = ''
+        debug_message = '*Debug information:*\n\n'
+        image_scores = {}
+        image_ocr_text = ''
+>>>>>>> Added full optout functionality
 
-    """use hateXplain to evaluate text messages, return label and scores"""
-    text = update.message.text
-    answer, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
+        """handle URLs"""
+        entities = update.message.parse_entities()
+        for key, value in entities.items():
+            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): #TODO: warum nur diese Endungen?
+                answer, score, image_ocr_test, image_scores = return_score_url(value, answer, image_ocr_test, image_scores)
 
+<<<<<<< HEAD
     answer_bot(answer, label_score, debug_message, context, update)
+=======
+        """use hateXplain to evaluate text messages, return label and scores"""
+        text = update.message.text
+        answer, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
+
+        for key, value in image_scores.items():
+            answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
+            answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
+
+        answer_bot(answer, label_score, debug_message, context, update)
+    else:
+        pass
+>>>>>>> Added full optout functionality
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
-    print('Handling voice')
+    if (update.effective_user.name not in optoutlist):
 
-    answer = ''
-    debug_message = '*Debug information:*\n\n'
+        print('Handling voice')
 
-    if update.message.voice:
-        file_id = update.message.voice.file_id
-        file_path = context.bot.getFile(file_id).file_path
+        answer = ''
+        debug_message = '*Debug information:*\n\n'
 
-    text = voice_to_text(file_path)
-    answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
+        if update.message.voice:
+            file_id = update.message.voice.file_id
+            file_path = context.bot.getFile(file_id).file_path
 
-    answer_bot(answer, label_score, debug_message, context, update)
+        text = voice_to_text(file_path)
+        answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
 
+        answer_bot(answer, label_score, debug_message, context, update)
+        
+    else:
+        pass
 def handle_image(update: Update, context: CallbackContext) -> None:
     """Check images and their caption"""
+<<<<<<< HEAD
     print('Handling image')
 
     answer = ''
@@ -279,9 +307,48 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     target_groups = score_target(image_ocr_text)
     if target_groups:
         answer += f"your hate was probably directed towards the following group(s): {target_groups}.\n"
+=======
+    if (update.effective_user.name not in optoutlist):
+        print('Handling image')
 
-    if answer:
-        update.message.reply_text(answer)
+        answer = ''
+        debug_message = '*Debug information:*\n\n'
+        image_scores = {}
+        image_ocr_text = ''
+
+        entities = update.message.parse_caption_entities()
+        for key, value in entities.items():
+            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
+                print(f'    Scoring caption image URL {value}')
+                score = score_image(value)['result']
+                image_scores[value] = score
+
+        """use hateXplain to evaluate the image caption and then evaluate the targets"""
+        if update.message.caption:
+            text = update.message.caption
+            answer, debug_message, label_score = return_return_score_text_and_targetscore_text(text,answer,debug_message,"caption")
+
+        # get file_path of image
+        if update.message.document:
+            file_path = update.message.document.get_file().file_path
+        elif update.message.photo:
+            file_id = update.message.photo[-1].file_id
+            file_path = context.bot.getFile(file_id).file_path
+        else:
+            raise NotImplementedError('Image type not implemented')
+
+        # score image
+        answer,score, image_ocr_test, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
+
+        target_groups = score_target(image_ocr_text)
+        if target_groups:
+            answer += f"your hate was probably directed towards {target_groups}.\n"
+>>>>>>> Added full optout functionality
+
+        if answer:
+            update.message.reply_text(answer)
+    else:
+        pass
 
 def return_score_text_and_target(text,answer,debug_message,type):
 
