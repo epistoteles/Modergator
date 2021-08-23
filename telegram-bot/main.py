@@ -289,7 +289,6 @@ def return_score_text_and_target(text,answer,debug_message,type):
     if label in ['offensive', 'hate']:
         answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\n"
         target_groups = score_target(text)
-        print("target_groups: ", target_groups)
         if len(target_groups) > 0:
             answer += f"Your hate was probably directed towards the following group(s): {target_groups}.\n\n"
         answer += f"If you think I made a mistake, use the /poll command to start a dispute.\n\n"

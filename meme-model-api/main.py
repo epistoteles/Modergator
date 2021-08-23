@@ -35,7 +35,7 @@ class ModelResponseSchema(Schema):
 
 class Model(MethodResource,Resource):
 
-    @doc(description='A model that judges the hatefulness of a meme.',  tags=['Meme Classification'])
+    @doc(description='This get request triggers a ML Model that judges the hatefulness of a meme.',  tags=['Meme Classification'])
     @use_kwargs(ModelRequestSchema, location="form")
     @marshal_with(ModelResponseSchema)
     def post(self, **kwargs):

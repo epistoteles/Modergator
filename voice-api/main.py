@@ -30,7 +30,7 @@ class ASR(MethodResource,Resource):
     model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
     processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
-    @doc(description='A classifier that detects the target of a text.',  tags=['ASR Classification'])
+    @doc(description='This get request triggers a classifier that detects the target of a text.',  tags=['ASR Classification'])
     @use_kwargs(ASRClassifierRequestSchema, location="querystring")
     @marshal_with(ASRClassifierResponseSchema)
     def get(self, **kwargs):

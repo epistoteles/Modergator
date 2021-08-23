@@ -22,7 +22,7 @@ class OCRClassifierResponseSchema(Schema):
 
 class OCR(MethodResource,Resource):
 
-    @doc(description='A classifier that detects the text from an image/meme.',  tags=['OCR Classification'])
+    @doc(description='This get request triggers a ML model that detects the text from an image/meme.',  tags=['OCR Classification'])
     @use_kwargs(OCRClassifierRequestSchema, location="querystring")
     @marshal_with(OCRClassifierResponseSchema)
     def get(self,**kwargs):
