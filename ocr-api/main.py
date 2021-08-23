@@ -9,10 +9,15 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
+<<<<<<< HEAD
 #import ocr
 import analysis_utility
 import urllib
 import urllib.request
+=======
+import ocr
+import analysis_utility
+>>>>>>> try to import analysis_utility.py not working yet
 
 app = Flask(__name__)
 api = Api(app)
