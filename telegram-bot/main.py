@@ -220,15 +220,11 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     entities = update.message.parse_entities()
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
-            answer, score, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+            answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
 
     """use hateXplain to evaluate text messages, return label and scores"""
     text = update.message.text
     answer, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
-
-    for key, value in image_scores.items():
-        answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
-        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
     answer_bot(answer, label_score, debug_message, context, update)
 
@@ -261,8 +257,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     for key, value in entities.items():
         if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
             print(f'    Scoring caption image URL {value}')
-            score = score_image(value)['result']
-            image_scores[value] = score
+            image_scores[value] = score_image(value)['result']
 
     """use hateXplain to evaluate the image caption and then evaluate the targets"""
     if update.message.caption:
@@ -279,7 +274,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         raise NotImplementedError('Image type not implemented')
 
     # score image
-    answer,score, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
+    answer, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
 
     target_groups = score_target(image_ocr_text)
     if target_groups:
@@ -310,15 +305,15 @@ def return_score_text_and_target(text,answer,debug_message,type):
 
 def return_score_url(file_path, answer, image_ocr_text, image_scores):
     print(f'    Scoring sent image URL {file_path}')
-    score = score_image(file_path)['result']
-    image_ocr_text = score_image(file_path)['ocr_text']
-    image_scores['sent from your device'] = score
+    score_image_dic = score_image(file_path)
+    image_ocr_text = score_image_dic['ocr_text']
+    image_scores['sent from your device'] = score_image_dic['result']
 
     for key, value in image_scores.items():
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-    return answer, score, image_ocr_text, image_scores
+    return answer, image_ocr_text, image_scores
 
 def answer_bot(answer, label_score, debug_message, context, update):
     if answer:
@@ -363,10 +358,9 @@ def score_text(text):
     r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
     label = r.json()['label']
     label_score = r.json()['label_score']
-    print(r.json()['scores'])
-    print(type(r.json()['scores']))
     scores = [float(x) for x in json.loads(r.json()['scores'])]
     label_score = float(label_score)
+    print("label: ", label, " label_score: ", label_score, " scores: ", scores)
     return label, label_score, scores
 
 
