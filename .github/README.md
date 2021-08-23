@@ -67,7 +67,6 @@ source install.sh
 This does the following:
 - create several virtual environments
 - create user-specific configs
-- download models that are too big for GitHub
 - install all Python dependencies
 
 To run the bot you need to download the models and place them in the right folders as described below:
