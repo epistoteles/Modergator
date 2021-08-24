@@ -1,10 +1,14 @@
 import pytesseract
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
 =======
 pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
 >>>>>>> added all relevant files of Niklas
+=======
+#pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
+>>>>>>> fix ocr api
 
 def image_to_text(croped_images, custom_config):
     
@@ -35,7 +39,11 @@ def image_to_text(croped_images, custom_config):
             text += ' '
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     return text[:-1], conf
 =======
     return text[:-1], conf
 >>>>>>> added all relevant files of Niklas
+=======
+    return text[:-1], conf
+>>>>>>> fix ocr api

@@ -10,12 +10,16 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
 <<<<<<< HEAD
+<<<<<<< HEAD
 #import ocr
 import analysis_utility
 import urllib
 import urllib.request
 =======
 import ocr
+=======
+#import ocr
+>>>>>>> fix ocr api
 import analysis_utility
 <<<<<<< HEAD
 >>>>>>> try to import analysis_utility.py not working yet
@@ -63,10 +67,15 @@ class OCR(MethodResource,Resource):
         #ocr_text = "test"
 =======
         print(os.getcwd())
+<<<<<<< HEAD
         analysis_utility.do_ocr(filename)
         print('ocr success')
 >>>>>>> fix cuda bugs
         ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
+=======
+        print(filename)
+        ocr_text, conf = analysis_utility.do_ocr(filename)
+>>>>>>> fix ocr api
         return {'ocr_text': ocr_text}, 200
 >>>>>>> add Niklas new ocr, draft for downloading img
 
