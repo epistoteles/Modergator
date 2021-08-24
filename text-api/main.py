@@ -70,8 +70,10 @@ api.add_resource(Classifier, '/classifier')  # add endpoints
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
     port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    host = '127.0.0.1'
 else:
-    port = 80
+    port = 5002
+    host = '172.20.0.12'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -88,4 +90,4 @@ docs = FlaskApiSpec(app)
 docs.register(Classifier)
 
 if __name__ == '__main__':
-    app.run(port=port)  # run our Flask app
+    app.run(host=host, port=port)  # run our Flask app

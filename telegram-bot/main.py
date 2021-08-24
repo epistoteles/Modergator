@@ -18,11 +18,11 @@ import os
 
 import requests
 from telegram import Update, ForceReply, Poll, ParseMode, ReplyKeyboardRemove
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PollAnswerHandler, PollHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PollAnswerHandler, \
+    PollHandler
 import json
 import shutil
 import pickle
-
 
 TOKEN = ""
 
@@ -37,9 +37,24 @@ DATA_STUMP = 'data/'
 
 # use ports of portdict or docker ports
 if os.path.isfile("portdict.pickle"):
+    HOSTDICT = {"meme-model-api": '127.0.0.1',
+                "text-api": '127.0.0.1',
+                "ocr-api": '127.0.0.1',
+                "asr-api": '127.0.0.1',
+                "target-api": '127.0.0.1'}
     PORTDICT = pickle.load(open("portdict.pickle", "rb"))
 else:
-    PORTDICT = {"meme-model-api":5001, "text-api":5002, "ocr-api": 5003, "voice-api": 5004, "target-api":5005}
+    HOSTDICT = {"meme-model-api": '172.20.0.11',
+                "text-api": '172.20.0.12',
+                "ocr-api": '172.20.0.13',
+                "asr-api": '172.20.0.14',
+                "target-api": '172.20.0.15'}
+    PORTDICT = {"meme-model-api": 5001,
+                "text-api": 5002,
+                "ocr-api": 5003,
+                "asr-api": 5004,
+                "target-api": 5005}
+
 
 # Enable logging
 logging.basicConfig(
@@ -72,7 +87,8 @@ def welcome_message(update: Update, context: CallbackContext) -> None:
     message = f"Hello {users} and welcome to {group}! I am Modergator and keep an eye out for hateful content in this group. This means I am reading, seeing and listening to (but never storing) everything you and others write, send or speak.\n\nIf you don’t want me to process and moderate your data, please /optout.\n\nLearn more about hate speech here: /about."
     if users:
         context.bot.send_message(text=message, chat_id=update.message.chat_id)
-        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE', chat_id=update.message.chat_id)
+        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE',
+                                 chat_id=update.message.chat_id)
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -122,10 +138,10 @@ def optin_command(update: Update, _: CallbackContext) -> None:
             f'You have already opted in. To opt out, use the /optout command.')
 
 
-
 def scores_command(update: Update, _: CallbackContext) -> None:
     """Return a description of the classification scores when the command /scores is issued."""
-    update.message.reply_text(f'A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure)')
+    update.message.reply_text(
+        f'A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure)')
 
 
 def joke_command(update: Update, _: CallbackContext) -> None:
@@ -134,6 +150,7 @@ def joke_command(update: Update, _: CallbackContext) -> None:
     r = requests.get(url='https://api.chucknorris.io/jokes/random', params=params)
     text = r.json()['value']
     update.message.reply_text(text)
+
 
 def goodvibes_command(update, context):
     """Return a good vibes meme when the command /goodvibes is issued."""
@@ -245,9 +262,9 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-    #Access sender
-    #sender = update.message.from_user
-    #answer += f'The message was send by {sender}.\n'
+    # Access sender
+    # sender = update.message.from_user
+    # answer += f'The message was send by {sender}.\n'
 
     if answer:
         update.message.reply_text(answer)
@@ -260,7 +277,6 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     if debug:
         debug_message += f'\nTo turn debug information off, type /debug\.'
         context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
-
 
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
@@ -322,10 +338,10 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     if update.message.caption:
         text = update.message.caption
         label, label_score, _ = score_text(text)
-        if label in ['offensive', 'hate', 'normal']: # TODO for testing reasons included normal
+        if label in ['offensive', 'hate', 'normal']:  # TODO for testing reasons included normal
             target_groups = score_target(text)
             answer += f"Your message was deemed {label} with a score of {label_score:.2f}.\n"
-            if len(target_groups)>0:
+            if len(target_groups) > 0:
                 answer += f"Your hate was probably directed towards {target_groups}."
 
     # get file_path of image
@@ -347,7 +363,6 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
-
     target_groups = score_target(image_ocr_text)
     if target_groups:
         answer += f"your hate was probably directed towards {target_groups}.\n"
@@ -363,17 +378,17 @@ def score_image(image_url):
 
     # include ocr-api, get extracted text which will be directed to text api
     params = {"path": image_url}
-    r_ocr = requests.get(url=f"http://127.0.0.1:{PORTDICT['ocr-api']}/ocr", params=params)
+    r_ocr = requests.get(url=f"http://{HOSTDICT['ocr-api']}:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
     params = {"image": image_url, "image_description": ocr_text}
-    r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
+    r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
     if r.status_code == 200:
         r.raw.decode_content = True
         with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:
             shutil.copyfileobj(r.raw, f)
     else:
-       raise ConnectionError(r.status_code)
+        raise ConnectionError(r.status_code)
 
     data = r.json()
     return {"result": data['result'], "ocr_text": ocr_text}
@@ -383,7 +398,7 @@ def score_text(text):
     print("Scoring text: ", text)
     """Receives text string and returns label and label scores"""
     params = {"text": text}
-    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['text-api']}/classifier", params=params)
+    r = requests.get(url=f"http://{HOSTDICT['text-api']}:{PORTDICT['text-api']}/classifier", params=params)
     label = r.json()['label']
     label_score = r.json()['label_score']
     print(r.json()['scores'])
@@ -396,13 +411,13 @@ def score_text(text):
 def score_target(text):
     print("Scoring target with text: ", text)
     params = {"text": text}
-    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['target-api']}/classifier", params=params)
+    r = requests.get(url=f"http://{HOSTDICT['target-api']}:{PORTDICT['target-api']}/classifier", params=params)
     target_groups = json.dumps(r.json()['target_groups'])
     print("scored targets: ", target_groups)
-    target_groups = target_groups.strip('\"') # remove quotation marks
-    target_groups = target_groups.strip("[]") # remove square brackets
-    target_groups = target_groups.strip('\"') # remove quotation marks
-    target_groups = target_groups.strip('\'') # remove quotation marks
+    target_groups = target_groups.strip('\"')  # remove quotation marks
+    target_groups = target_groups.strip("[]")  # remove square brackets
+    target_groups = target_groups.strip('\"')  # remove quotation marks
+    target_groups = target_groups.strip('\'')  # remove quotation marks
     return target_groups
 
 
@@ -420,7 +435,7 @@ def voice_to_text(voice_url):
         raise ConnectionError(r.status_code)
 
     params = {"filename": filename}
-    r_asr = requests.get(url=f"http://127.0.0.1:{PORTDICT['voice-api']}/asr", params=params)
+    r_asr = requests.get(url=f"http://{HOSTDICT['asr-api']}:{PORTDICT['asr-api']}/asr", params=params)
     transcription = r_asr.json()['transcription']
     for f in glob.glob(f'{DATA_STUMP}voice/*'):
         os.remove(f)
@@ -454,7 +469,8 @@ def main() -> None:
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_text))
-    dispatcher.add_handler(MessageHandler((Filters.photo | Filters.document.category('image')) & ~Filters.command, handle_image))
+    dispatcher.add_handler(
+        MessageHandler((Filters.photo | Filters.document.category('image')) & ~Filters.command, handle_image))
     dispatcher.add_handler(MessageHandler(Filters.voice & ~Filters.command, handle_voice))
 
     # Start the Bot

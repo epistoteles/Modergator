@@ -38,9 +38,11 @@ api.add_resource(OCR, '/ocr')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['ocr-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    host = '127.0.0.1'
 else:
-    port = 80
+    port = 5003
+    host = '172.20.0.13'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -58,4 +60,4 @@ docs.register(OCR)
 
 if __name__ == '__main__':
     print(port)
-    app.run(port=port)  # run our Flask app
+    app.run(host=host, port=port)  # run our Flask app

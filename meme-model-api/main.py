@@ -145,9 +145,11 @@ api.add_resource(Model, '/classifier')
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['meme-model-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    host = '127.0.0.1'
 else:
-    port = 80
+    port = 5001
+    host = '172.20.0.11'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -164,4 +166,4 @@ docs = FlaskApiSpec(app)
 docs.register(Model)
 
 if __name__ == '__main__':
-    app.run(port=port)  # run our Flask app
+    app.run(host=host, port=port)  # run our Flask app

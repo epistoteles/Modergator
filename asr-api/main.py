@@ -72,10 +72,13 @@ class ASR(MethodResource,Resource):
 api.add_resource(ASR, '/asr')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
+# check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['voice-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    host = '127.0.0.1'
 else:
-    port = 80
+    port = 5004
+    host = '172.20.0.14'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -92,4 +95,4 @@ docs = FlaskApiSpec(app)
 docs.register(ASR)
 
 if __name__ == '__main__':
-    app.run(port=port)  # run our Flask app
+    app.run(host=host, port=port)  # run our Flask app
