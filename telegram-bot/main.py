@@ -239,7 +239,6 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         entities = update.message.parse_entities()
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
-                #KATRIN: detection API
                 if detect_meme(value):
                     answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
 
@@ -283,12 +282,10 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
         entities = update.message.parse_caption_entities()
         for key, value in entities.items():
-            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): # KATRIN erweitern
-                #KATRIN detection
+            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
                 print(f'    Scoring caption image URL {value}')
-                image_scores[value] = score_image(value)['result']
-
-
+                if detect_meme(value):
+                        image_scores[value] = score_image(value)['result']
 
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
@@ -304,7 +301,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         else:
             raise NotImplementedError('Image type not implemented')
 
-#KATRIN detection
+        #TODO TRAIN detection
         # score image
         answer, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
 
