@@ -30,7 +30,7 @@ class DetectionRequestSchema(Schema):
     url = fields.Str(required=True, description="The path/url to an image/meme.")
 
 class DetectionResponseSchema(Schema):
-    result = fields.Str(description="The result.")
+    result = fields.Boolean(description="The result.")
 
 class Detection(MethodResource,Resource):
 
@@ -45,23 +45,29 @@ class Detection(MethodResource,Resource):
         image_url = args['url']
         class_indices = {'meme': 0, 'not_meme': 1}
 
-        # save image for inference
-        file_ending = image_url.split(".")[-1]
-        filename = "10000" + "." + file_ending
-        urllib.request.urlretrieve(image_url, filename)
+        detection = False
+        try:
+            file_ending = image_url.split(".")[-1]
+            filename = "meme_detection_image" + "." + file_ending
+            urllib.request.urlretrieve(image_url, filename)
 
-        img = Image.open(filename)
-        img = img.resize((600,600))
-        x = np.asarray(img)
-        x = x.reshape(1,600,600,3)
+            img = Image.open(filename)
+            img = img.resize((600,600))
+            x = np.asarray(img)
+            x = x.reshape(1,600,600,3)
 
-        pred = saved_model.predict(x)
-        result = list(class_indices.keys())[int(round(pred[0][0]))]
-        print("result: ", class_indices[result])
-        
-        return {"result": class_indices[result]}, 200
+            pred = saved_model.predict(x)
+            result = list(class_indices.keys())[int(round(pred[0][0]))]
+            print("result: ", class_indices[result])
 
-api.add_resource(Detection, '/detection')  # add endpoints
+            if class_indices[result]==0:
+                detection = True
+            os.remove(filename)
+        except urllib.error.HTTPError as exception:
+            print(exception, ", therefore using False as default.")
+        return {"result": detection}, 200
+
+api.add_resource(Detection, '/classifier')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):

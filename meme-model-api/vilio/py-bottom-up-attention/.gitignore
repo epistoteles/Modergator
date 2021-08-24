@@ -35,6 +35,6 @@ dist/
 .idea
 
 # project dirs
-#/detectron2/model_zoo/configs
+/detectron2/model_zoo/configs
 /datasets
 /models
