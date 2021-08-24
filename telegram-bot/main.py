@@ -246,8 +246,14 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         entities = update.message.parse_entities()
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
+<<<<<<< HEAD
                 if detect_meme(value):
                     answer, image_ocr_text, image_scores, debug_message = return_score_url(value, answer, image_ocr_text, image_scores, debug_message)
+=======
+                #KATRIN: detection API
+                if detect_meme(value):
+                    answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+>>>>>>> added meme-detection-api and fixed bugs
 
         """use hateXplain to evaluate text messages, return label and scores"""
         text = update.message.text
@@ -257,7 +263,10 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     else:
         pass
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> added meme-detection-api and fixed bugs
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
     optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
@@ -272,7 +281,11 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
             file_path = context.bot.getFile(file_id).file_path
 
         text = voice_to_text(file_path)
+<<<<<<< HEAD
         answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
+=======
+        answer, lable, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
+>>>>>>> added meme-detection-api and fixed bugs
 
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
@@ -292,10 +305,17 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
         entities = update.message.parse_caption_entities()
         for key, value in entities.items():
+<<<<<<< HEAD
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
+=======
+            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): # KATRIN erweitern
+                #KATRIN detection
+>>>>>>> added meme-detection-api and fixed bugs
                 print(f'    Scoring caption image URL {value}')
                 if detect_meme(value):
                         image_scores[value] = score_image(value)['result']
+
+
 
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
@@ -311,7 +331,11 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         else:
             raise NotImplementedError('Image type not implemented')
 
+<<<<<<< HEAD
         #TODO TRAIN detection
+=======
+#KATRIN detection
+>>>>>>> added meme-detection-api and fixed bugs
         # score image
         answer, image_ocr_text, image_scores, debug_message = return_score_url(file_path, answer,image_ocr_text,image_scores, debug_message)
 
@@ -329,6 +353,11 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
     else:
         pass
+<<<<<<< HEAD
+=======
+
+def return_score_text_and_target(text,answer,debug_message,type):
+>>>>>>> added meme-detection-api and fixed bugs
 
 
 def return_score_text_and_target(text,answer,debug_message,type):
@@ -359,6 +388,7 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores, debug_mess
 
     for key, value in image_scores.items():
         print("value:", value)
+<<<<<<< HEAD
         if value:
             answer += f"Your image {key} was deemed hateful.\n"
             answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
@@ -370,15 +400,26 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores, debug_mess
                          f"   transcription:  \"{image_ocr_text_escaped}\"\n```"
 
     return answer, image_ocr_text, image_scores, debug_message
+=======
+        answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
+        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
+>>>>>>> added meme-detection-api and fixed bugs
 
 
 def answer_bot(answer, label, label_score, debug_message, context, update):
     if answer:
         update.message.reply_text(answer)
+<<<<<<< HEAD
         if label in ['offensive']:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
                                      chat_id=update.message.chat_id)
         elif label in ['hate'] and label_score < 0.6:
+=======
+        if  label in ['offensive', 'hate'] and label_score > 0.8:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
+                                     chat_id=update.message.chat_id)
+        elif label in ['offensive', 'hate'] and label_score > 0.5:
+>>>>>>> added meme-detection-api and fixed bugs
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
                                      chat_id=update.message.chat_id)
         elif label in ['hate'] and label_score >= 0.6:
@@ -410,7 +451,11 @@ def score_image(image_url):
 
     data = r.json()
     print(f'    Scored image with ', {data['result']} )
+<<<<<<< HEAD
     return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dict und nicht die variablen?
+=======
+    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dic und nicht die variablen?
+>>>>>>> added meme-detection-api and fixed bugs
 
 
 def score_text(text):
@@ -438,6 +483,13 @@ def score_target(text):
     print("scored targets: ", target_groups)
     return target_groups
 
+def detect_meme(url):
+    print("Start Meme Detection")
+    params = {"url": url}
+    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['meme-detection-api']}/classifier", params=params)
+    is_meme = r.json()["result"]
+    print("is_meme: ", is_meme)
+    return is_meme
 
 def detect_meme(url):
     print("Start Meme Detection")

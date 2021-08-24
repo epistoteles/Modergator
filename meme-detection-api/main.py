@@ -30,7 +30,11 @@ class DetectionRequestSchema(Schema):
     url = fields.Str(required=True, description="The path/url to an image/meme.")
 
 class DetectionResponseSchema(Schema):
+<<<<<<< HEAD
     result = fields.Boolean(description="The result.")
+=======
+    result = fields.Str(description="The result.")
+>>>>>>> added meme-detection-api and fixed bugs
 
 class Detection(MethodResource,Resource):
 
@@ -45,6 +49,7 @@ class Detection(MethodResource,Resource):
         image_url = args['url']
         class_indices = {'meme': 0, 'not_meme': 1}
 
+<<<<<<< HEAD
         detection = False
         try:
             file_ending = image_url.split(".")[-1]
@@ -68,14 +73,38 @@ class Detection(MethodResource,Resource):
         return {"result": detection}, 200
 
 api.add_resource(Detection, '/classifier')  # add endpoints
+=======
+        # save image for inference
+        file_ending = image_url.split(".")[-1]
+        filename = "10000" + "." + file_ending
+        urllib.request.urlretrieve(image_url, filename)
+
+        img = Image.open(filename)
+        img = img.resize((600,600))
+        x = np.asarray(img)
+        x = x.reshape(1,600,600,3)
+
+        pred = saved_model.predict(x)
+        result = list(class_indices.keys())[int(round(pred[0][0]))]
+        print("result: ", class_indices[result])
+        
+        return {"result": class_indices[result]}, 200
+
+api.add_resource(Detection, '/detection')  # add endpoints
+>>>>>>> added meme-detection-api and fixed bugs
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
     port = pickle.load(open("portdict.pickle", "rb"))['meme-detection-api']
+<<<<<<< HEAD
     host = '127.0.0.1'
 else:
     port = 5006
     host = '172.20.0.16'
+=======
+else:
+    port = 80
+>>>>>>> added meme-detection-api and fixed bugs
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -93,4 +122,8 @@ docs.register(Detection)
 
 if __name__ == '__main__':
     print(port)
+<<<<<<< HEAD
     app.run(host=host, port=port)  # run our Flask app
+=======
+    app.run(port=port)  # run our Flask app
+>>>>>>> added meme-detection-api and fixed bugs
