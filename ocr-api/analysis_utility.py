@@ -10,7 +10,7 @@ net = text_scene_detection_utility.build_model()
 def do_ocr(path, custom_config=r'--oem 1 --psm 8'):
 
     img_list = img_utility.load_img(path)
-    bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=True, poly=False, refine_net=None)
+    bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=False, poly=False, refine_net=None)
 
     if len(bounding_boxes) == 0:
         return '', 100
