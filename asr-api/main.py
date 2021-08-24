@@ -73,7 +73,7 @@ api.add_resource(ASR, '/asr')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['asr-api']
     host = '127.0.0.1'
 else:
     port = 5004

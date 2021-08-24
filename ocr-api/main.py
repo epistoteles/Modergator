@@ -38,7 +38,7 @@ api.add_resource(OCR, '/ocr')  # add endpoints
 
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
-    port = pickle.load(open("portdict.pickle", "rb"))['text-api']
+    port = pickle.load(open("portdict.pickle", "rb"))['ocr-api']
     host = '127.0.0.1'
 else:
     port = 5003

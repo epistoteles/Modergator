@@ -66,8 +66,10 @@ api.add_resource(Detection, '/detection')  # add endpoints
 # check if project is run with scripts or docker and assign ports
 if os.path.isfile("portdict.pickle"):
     port = pickle.load(open("portdict.pickle", "rb"))['meme-detection-api']
+    host = '127.0.0.1'
 else:
-    port = 80
+    port = 5006
+    host = '172.20.0.16'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
@@ -85,4 +87,4 @@ docs.register(Detection)
 
 if __name__ == '__main__':
     print(port)
-    app.run(port=port)  # run our Flask app
+    app.run(host=host, port=port)  # run our Flask app

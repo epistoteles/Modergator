@@ -64,12 +64,28 @@ services:
     networks:
       static-network:
         ipv4_address: 172.20.0.15
+  meme-detection-api:
+    build:
+      context: .
+      dockerfile: meme-detection-api/Dockerfile
+    ports:
+      - "5006:5006"
+    volumes:
+      - type: volume
+        source: data
+        target: /modergator/data/
+        volume:
+          nocopy: false
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.16
   telegram-bot:
     build:
       context: .
       dockerfile: telegram-bot/Dockerfile
     depends_on:
       - meme-model-api
+      - meme-detection-api
       - text-api
       - ocr-api
       - asr-api
@@ -82,7 +98,7 @@ services:
           nocopy: false
     networks:
       static-network:
-        ipv4_address: 172.20.0.16
+        ipv4_address: 172.20.0.17
 volumes:
   data:
 networks:
