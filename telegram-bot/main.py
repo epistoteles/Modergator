@@ -222,16 +222,18 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         entities = update.message.parse_entities()
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
-                answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+                #KATRIN: detection API
+                if detect_meme(value):
+                    answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
 
         """use hateXplain to evaluate text messages, return label and scores"""
         text = update.message.text
-        answer, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
+        answer, label, debug_message, label_score = return_score_text_and_target(text, answer,debug_message, "text")
 
-        answer_bot(answer, label_score, debug_message, context, update)
+        answer_bot(answer, label, label_score, debug_message, context, update)
     else:
         pass
-    
+
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
     optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
@@ -246,9 +248,9 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
             file_path = context.bot.getFile(file_id).file_path
 
         text = voice_to_text(file_path)
-        answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
+        answer, lable, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
-        answer_bot(answer, label_score, debug_message, context, update)
+        answer_bot(answer, label, label_score, debug_message, context, update)
     else:
         pass
 def handle_image(update: Update, context: CallbackContext) -> None:
@@ -264,14 +266,17 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
         entities = update.message.parse_caption_entities()
         for key, value in entities.items():
-            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')):
+            if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif')): # KATRIN erweitern
+                #KATRIN detection
                 print(f'    Scoring caption image URL {value}')
                 image_scores[value] = score_image(value)['result']
+
+
 
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
             text = update.message.caption
-            answer, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"caption")
+            answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"caption")
 
         # get file_path of image
         if update.message.document:
@@ -282,6 +287,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         else:
             raise NotImplementedError('Image type not implemented')
 
+#KATRIN detection
         # score image
         answer, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
 
@@ -293,7 +299,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
             update.message.reply_text(answer)
     else:
         pass
-    
+
 def return_score_text_and_target(text,answer,debug_message,type):
 
     label, label_score, scores = score_text(text)
@@ -312,7 +318,7 @@ def return_score_text_and_target(text,answer,debug_message,type):
                      f"   normal:    {scores[1]:.3f}\n" \
                      f"   offensive: {scores[2]:.3f}\n" \
                      f"```"
-    return answer, debug_message, label_score
+    return answer, label, debug_message, label_score
 
 def return_score_url(file_path, answer, image_ocr_text, image_scores):
     print(f'    Scoring sent image URL {file_path}')
@@ -321,18 +327,19 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores):
     image_scores['sent from your device'] = score_image_dic['result']
 
     for key, value in image_scores.items():
+        print("value:", value)
         answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
         answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
 
     return answer, image_ocr_text, image_scores
 
-def answer_bot(answer, label_score, debug_message, context, update):
+def answer_bot(answer, label, label_score, debug_message, context, update):
     if answer:
         update.message.reply_text(answer)
-        if label_score > 0.8:
+        if  label in ['offensive', 'hate'] and label_score > 0.8:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
                                      chat_id=update.message.chat_id)
-        elif label_score > 0.5:
+        elif label in ['offensive', 'hate'] and label_score > 0.5:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
                                      chat_id=update.message.chat_id)
     if debug:
@@ -359,6 +366,7 @@ def score_image(image_url):
        raise ConnectionError(r.status_code)
 
     data = r.json()
+    print(f'    Scored image with ', {data['result']} )
     return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dic und nicht die variablen?
 
 
@@ -387,6 +395,13 @@ def score_target(text):
     print("scored targets: ", target_groups)
     return target_groups
 
+def detect_meme(url):
+    print("Start Meme Detection")
+    params = {"url": url}
+    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['meme-detection-api']}/classifier", params=params)
+    is_meme = r.json()["result"]
+    print("is_meme: ", is_meme)
+    return is_meme
 
 def voice_to_text(voice_url):
     """Receives voice URL and returns text"""

@@ -31,7 +31,7 @@ class ModelRequestSchema(Schema):
     image_description = fields.Str(required=True, description="The text that is shown on the image.")
 
 class ModelResponseSchema(Schema):
-    result = fields.Str(description="0 = the meme is not hateful, 1 = the meme is hateful")
+    result = fields.Boolean(description="True = the meme is not hateful, False = the meme is hateful")
 
 class Model(MethodResource,Resource):
 
@@ -82,7 +82,10 @@ class Model(MethodResource,Resource):
             score_float = float(score)
             print(score_float)
             hate_value = self.calculate_hate(score_float)
-            data = {'result': hate_value}
+            result = False
+            if hate_value=="1": # 0 = not hateful, 1 = hateful
+                result = True
+            data = {'result': result}
             self.clean_up()
             return data
 
