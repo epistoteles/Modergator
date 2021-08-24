@@ -50,6 +50,7 @@ class OCR(MethodResource,Resource):
         filename = "10000" + "." + file_ending
         urllib.request.urlretrieve(path, filename)
 <<<<<<< HEAD
+<<<<<<< HEAD
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
@@ -60,6 +61,11 @@ class OCR(MethodResource,Resource):
 =======
         analysis_utility.do_ocr(r'../filename')
         #ocr_text = "test"
+=======
+        print(os.getcwd())
+        analysis_utility.do_ocr(filename)
+        print('ocr success')
+>>>>>>> fix cuda bugs
         ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
         return {'ocr_text': ocr_text}, 200
 >>>>>>> add Niklas new ocr, draft for downloading img
