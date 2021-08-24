@@ -36,6 +36,7 @@ pip3 install -r text-api/requirements.txt
 pip3 install -r ocr-api/requirements.txt
 pip3 install -r asr-api/requirements.txt
 pip3 install -r target-api/requirements.txt
+pip3 install -r meme-detection-api/requirements.txt
 pip3 install -r telegram-bot/requirements.txt
 
 # deactive venv
