@@ -9,21 +9,22 @@ import model.imgproc as imgproc
 import cv2
 from torch.autograd import Variable
 from operator import itemgetter
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def build_model():
     # load net
     net = CRAFT()     # initialize
 
     # Load weights
-    net.load_state_dict(copyStateDict(torch.load('model/craft_mlt_25k.pth')))
+    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
 
-    net = net.cuda()
+    net = net.to(device)
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = False
     
     return net
     
-def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
+def text_detection(net, image, text_threshold, link_threshold, low_text, device, poly, refine_net=None):
     
     t0 = time.time()
     
