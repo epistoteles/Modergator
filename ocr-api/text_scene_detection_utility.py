@@ -24,7 +24,7 @@ def build_model():
     
     return net
     
-def text_detection(net, image, text_threshold, link_threshold, low_text, device, poly, refine_net=None):
+def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
     
     t0 = time.time()
     
@@ -36,8 +36,8 @@ def text_detection(net, image, text_threshold, link_threshold, low_text, device,
     x = imgproc.normalizeMeanVariance(img_resized)
     x = torch.from_numpy(x).permute(2, 0, 1)    # [h, w, c] to [c, h, w]
     x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
-    if cuda:
-        x = x.cuda()
+    #if cuda:
+    #    x = x.cuda()
 
     # forward pass
     with torch.no_grad():

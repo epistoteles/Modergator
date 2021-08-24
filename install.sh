@@ -33,6 +33,7 @@ source venv/bin/activate
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
 pip3 install -r text-api/requirements.txt
+pip3 install --upgrade torch torchvision
 pip3 install -r ocr-api/requirements.txt
 pip3 install -r asr-api/requirements.txt
 pip3 install -r target-api/requirements.txt

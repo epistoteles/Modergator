@@ -9,7 +9,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
-import ocr
+#import ocr
 import analysis_utility
 import urllib
 import urllib.request
@@ -39,9 +39,8 @@ class OCR(MethodResource,Resource):
         filename = "10000" + "." + file_ending
         urllib.request.urlretrieve(path, filename)
         print(os.getcwd())
-        analysis_utility.do_ocr(filename)
-        print('ocr success')
-        ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
+        print(filename)
+        ocr_text, conf = analysis_utility.do_ocr(filename)
         return {'ocr_text': ocr_text}, 200
 
 api.add_resource(OCR, '/ocr')  # add endpoints
