@@ -11,6 +11,8 @@ from marshmallow import Schema, fields
 import pickle
 import ocr
 import analysis_utility
+import urllib
+import urllib.request
 
 app = Flask(__name__)
 api = Api(app)
@@ -31,8 +33,14 @@ class OCR(MethodResource,Resource):
         parser.add_argument('path', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
         path = args['path']
-
-        ocr_text = ocr.do_ocr(path, custom_config = r'--oem 1 --psm 8')
+        print(path)
+        file_ending = path.split(".")[-1]
+        print(file_ending)
+        filename = "10000" + "." + file_ending
+        urllib.request.urlretrieve(path, filename)
+        analysis_utility.do_ocr(r'../filename')
+        #ocr_text = "test"
+        ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
         return {'ocr_text': ocr_text}, 200
 
 api.add_resource(OCR, '/ocr')  # add endpoints
