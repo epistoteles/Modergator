@@ -38,8 +38,9 @@ class OCR(MethodResource,Resource):
         print(file_ending)
         filename = "10000" + "." + file_ending
         urllib.request.urlretrieve(path, filename)
-        analysis_utility.do_ocr(r'../filename')
-        #ocr_text = "test"
+        print(os.getcwd())
+        analysis_utility.do_ocr(filename)
+        print('ocr success')
         ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
         return {'ocr_text': ocr_text}, 200
 
