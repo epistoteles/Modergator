@@ -10,15 +10,20 @@ import cv2
 from torch.autograd import Variable
 from operator import itemgetter
 <<<<<<< HEAD
+<<<<<<< HEAD
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 =======
 >>>>>>> added all relevant files of Niklas
+=======
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+>>>>>>> add Niklas new ocr, draft for downloading img
 
 def build_model():
     # load net
     net = CRAFT()     # initialize
 
     # Load weights
+<<<<<<< HEAD
 <<<<<<< HEAD
     net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
 
@@ -28,12 +33,17 @@ def build_model():
 
     net = net.cuda()
 >>>>>>> added all relevant files of Niklas
+=======
+    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
+
+    net = net.to(device)
+>>>>>>> add Niklas new ocr, draft for downloading img
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = False
     
     return net
     
-def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
+def text_detection(net, image, text_threshold, link_threshold, low_text, device, poly, refine_net=None):
     
     t0 = time.time()
     
@@ -98,7 +108,11 @@ def copyStateDict(state_dict):
         name = ".".join(k.split(".")[start_idx:])
         new_state_dict[name] = v
 <<<<<<< HEAD
+<<<<<<< HEAD
     return new_state_dict
 =======
     return new_state_dict
 >>>>>>> added all relevant files of Niklas
+=======
+    return new_state_dict
+>>>>>>> add Niklas new ocr, draft for downloading img

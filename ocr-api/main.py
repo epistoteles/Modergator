@@ -17,7 +17,12 @@ import urllib.request
 =======
 import ocr
 import analysis_utility
+<<<<<<< HEAD
 >>>>>>> try to import analysis_utility.py not working yet
+=======
+import urllib
+import urllib.request
+>>>>>>> add Niklas new ocr, draft for downloading img
 
 app = Flask(__name__)
 api = Api(app)
@@ -44,6 +49,7 @@ class OCR(MethodResource,Resource):
         print(file_ending)
         filename = "10000" + "." + file_ending
         urllib.request.urlretrieve(path, filename)
+<<<<<<< HEAD
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
@@ -51,6 +57,12 @@ class OCR(MethodResource,Resource):
         print('conf', conf)
         print('both from api')
         return {'ocr_text': ocr_text, 'conf': conf}, 200
+=======
+        analysis_utility.do_ocr(r'../filename')
+        #ocr_text = "test"
+        ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
+        return {'ocr_text': ocr_text}, 200
+>>>>>>> add Niklas new ocr, draft for downloading img
 
 api.add_resource(OCR, '/ocr')  # add endpoints
 
