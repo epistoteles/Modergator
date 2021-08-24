@@ -19,15 +19,23 @@ deactivate
 # activate venv
 source venv/bin/activate
 
+
+
 # start all python components in their own screen session
 screen -L -S text-api -d -m python3 text-api/main.py
 screen -L -S ocr-api -d -m python3 ocr-api/main.py
-screen -L -S voice-api -d -m python3 voice-api/main.py
+screen -L -S asr-api -d -m python3 asr-api/main.py
 screen -L -S target-api -d -m python3 target-api/main.py
+screen -L -S meme-detection-api -d -m python3 meme-detection-api/main.py
 screen -L -S telegram-bot -d -m python3 telegram-bot/main.py
+
+# wait for the screens to fully function (model-detection-api takes 60 sec)
+sleep 60
 
 # deactivate venv
 deactivate
+
+
 
 # print overview
 sleep 2

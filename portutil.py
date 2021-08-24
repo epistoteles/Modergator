@@ -38,7 +38,7 @@ def print_swagger_paths():
 def fill_portdict():
     print('Filling portdict and starting services ...')
     portdict = {}
-    for api in ['text-api', 'asr-api', 'ocr-api', 'meme-model-api', 'target-api']:
+    for api in ['text-api', 'asr-api', 'ocr-api', 'meme-model-api', 'target-api', 'meme-detection-api']:
         port = get_unused_port(api)
         portdict[api] = port
     pickle.dump(portdict, open("portdict.pickle", "wb"))

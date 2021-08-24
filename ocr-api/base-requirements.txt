@@ -1,2 +1,0 @@
-pytest==2.9.1
-flask_apispec==0.11.0

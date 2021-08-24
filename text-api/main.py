@@ -33,7 +33,7 @@ class Classifier(MethodResource,Resource):
     model = AutoModelForSequenceClassification.from_pretrained("Hate-speech-CNERG/bert-base-uncased-hatexplain")
     categories = {0: 'hate', 1: 'normal', 2: 'offensive'}
 
-    @doc(description='A classifier that judges the hatefulness of a text.',  tags=['Text Classification'])
+    @doc(description='This get request triggers a classifier that judges the hatefulness of a text.',  tags=['Text Classification'])
     @use_kwargs(TextClassifierRequestSchema, location="querystring")
     @marshal_with(TextClassifierResponseSchema)
     def get(self, **kwargs):
