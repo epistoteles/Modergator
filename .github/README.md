@@ -46,6 +46,7 @@ You don't want the bot to process your messages? Just type /optout and your mess
 
 As of now, the bot provides the following commands:
 - /help to get an overview of the commands
+- /howto to get an in-depth explanation of how to use the bot
 - /optout to optout of the processing of your messages
 - /optin to opt-in again to the processing of your messages
 - /poll to dispute the classification
