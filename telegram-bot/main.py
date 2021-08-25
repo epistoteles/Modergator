@@ -407,6 +407,7 @@ def score_image(image_url):
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
 =======
@@ -415,6 +416,11 @@ def score_image(image_url):
     conf = float(conf)
 =======
 >>>>>>> add conf from ocr
+=======
+    print(ocr_text)
+    print(conf)
+    conf = float(conf)
+>>>>>>> try to fix issues with ocr, not working
     params = {"image": image_url, "image_description": ocr_text, "conf": conf}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
 >>>>>>> try to fix issues with ocr, not working
