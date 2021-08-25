@@ -264,7 +264,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
             file_path = context.bot.getFile(file_id).file_path
 
         text = voice_to_text(file_path)
-        answer, lable, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
+        answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
