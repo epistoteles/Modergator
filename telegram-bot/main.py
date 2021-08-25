@@ -96,12 +96,11 @@ def help_command(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
                               'You can use the following commands:\n'
                               '/help to get an overview of the commands\n'
-                              '/start to display the welcome message\n'
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
-                              '/poll to discuss the classification [this feature is in progress]\n'
-                              '/scores to explain the classification scores\n'
-                              '/joke to make me tell a joke')
+                              '/poll to dispute the classification [this feature is in progress]\n'
+                              '/debug to see Modergators internal workings\n'
+                              '/joke to make Modergator tell a joke')
 
 
 def debug_command(update: Update, _: CallbackContext) -> None:
@@ -250,6 +249,7 @@ def handle_text(update: Update, context: CallbackContext) -> None:
     else:
         pass
 
+
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
     optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
@@ -269,6 +269,8 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
         pass
+
+
 def handle_image(update: Update, context: CallbackContext) -> None:
     """Check images and their caption"""
     optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
@@ -314,8 +316,8 @@ def handle_image(update: Update, context: CallbackContext) -> None:
     else:
         pass
 
-def return_score_text_and_target(text,answer,debug_message,type):
 
+def return_score_text_and_target(text,answer,debug_message,type):
     label, label_score, scores = score_text(text)
     if label in ['offensive', 'hate']:
         answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\n"
@@ -334,6 +336,7 @@ def return_score_text_and_target(text,answer,debug_message,type):
                      f"```"
     return answer, label, debug_message, label_score
 
+
 def return_score_url(file_path, answer, image_ocr_text, image_scores):
     print(f'    Scoring sent image URL {file_path}')
     score_image_dic = score_image(file_path)
@@ -347,6 +350,7 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores):
 
     return answer, image_ocr_text, image_scores
 
+
 def answer_bot(answer, label, label_score, debug_message, context, update):
     if answer:
         update.message.reply_text(answer)
@@ -357,8 +361,9 @@ def answer_bot(answer, label, label_score, debug_message, context, update):
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
                                      chat_id=update.message.chat_id)
     if debug:
-        debug_message += f'\nTo turn debug information off, type /debug\.'
+        debug_message += f'\nScores range from 0 (not sure) to 1 (very sure).\nTo turn debug information off, type /debug\.'
         context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
+
 
 def score_image(image_url):
     print("Scoring image")
@@ -381,7 +386,7 @@ def score_image(image_url):
 
     data = r.json()
     print(f'    Scored image with ', {data['result']} )
-    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dic und nicht die variablen?
+    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dict und nicht die variablen?
 
 
 def score_text(text):
@@ -409,6 +414,7 @@ def score_target(text):
     print("scored targets: ", target_groups)
     return target_groups
 
+
 def detect_meme(url):
     print("Start Meme Detection")
     params = {"url": url}
@@ -416,6 +422,7 @@ def detect_meme(url):
     is_meme = r.json()["result"]
     print("is_meme: ", is_meme)
     return is_meme
+
 
 def voice_to_text(voice_url):
     """Receives voice URL and returns text"""
