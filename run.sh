@@ -20,7 +20,6 @@ deactivate
 source venv/bin/activate
 
 
-
 # start all python components in their own screen session
 screen -L -S text-api -d -m python3 text-api/main.py
 screen -L -S ocr-api -d -m python3 ocr-api/main.py

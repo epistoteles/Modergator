@@ -16,7 +16,6 @@ pip3 install -r meme-model-api/requirements_git.txt
 pip3 install flask_apispec
 
 # create configs directory
-
 cd meme-model-api/vilio/py-bottom-up-attention
 python3 setup.py build develop
 cd ../../..

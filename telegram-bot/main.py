@@ -247,7 +247,7 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
                 if detect_meme(value):
-                    answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+                    answer, image_ocr_text, image_scores, debug_message = return_score_url(value, answer, image_ocr_text, image_scores, debug_message)
 
         """use hateXplain to evaluate text messages, return label and scores"""
         text = update.message.text
@@ -275,8 +275,6 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
         answer_bot(answer, label, label_score, debug_message, context, update)
-        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzh9hJpr02fbzkfolQjjqj8FsOrsNfgACIwoAApmdQVPxErY3me_ggSAE',
-                                 chat_id=update.message.chat_id)  # TODO Voice Sticker
     else:
         pass
 
@@ -315,16 +313,20 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
         #TODO TRAIN detection
         # score image
-        answer, image_ocr_text, image_scores = return_score_url(file_path, answer,image_ocr_text,image_scores)
+        answer, image_ocr_text, image_scores, debug_message = return_score_url(file_path, answer,image_ocr_text,image_scores, debug_message)
 
         target_groups = score_target(image_ocr_text)
-        if target_groups:
+        if target_groups and image_scores:
             answer += f"your hate was probably directed towards the following group(s): {target_groups}.\n"
 
         if answer:
             update.message.reply_text(answer)
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzh9hJpr02fbzkfolQjjqj8FsOrsNfgACIwoAApmdQVPxErY3me_ggSAE',
                                      chat_id=update.message.chat_id)
+        if debug:
+            debug_message += f'\nTo turn debug information off, type /debug\.'
+            context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
+
     else:
         pass
 
@@ -349,7 +351,7 @@ def return_score_text_and_target(text,answer,debug_message,type):
     return answer, label, debug_message, label_score
 
 
-def return_score_url(file_path, answer, image_ocr_text, image_scores):
+def return_score_url(file_path, answer, image_ocr_text, image_scores, debug_message):
     print(f'    Scoring sent image URL {file_path}')
     score_image_dic = score_image(file_path)
     image_ocr_text = score_image_dic['ocr_text']
@@ -357,16 +359,23 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores):
 
     for key, value in image_scores.items():
         print("value:", value)
-        answer += f"Your image {key} was deemed{'' if value else ' not'} hateful.\n"
-        answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
+        if value:
+            answer += f"Your image {key} was deemed hateful.\n"
+            answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
+        image_ocr_text_escaped = image_ocr_text
+        for x in ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
+            image_ocr_text_escaped = image_ocr_text_escaped.replace(x, f'\\{x}')
+        debug_message += f"``` Image:\n" \
+                         f"   classification: {'' if value else ' not'} hateful\.\n" \
+                         f"   transcription: \"{image_ocr_text_escaped}\"\n```"
 
-    return answer, image_ocr_text, image_scores
+    return answer, image_ocr_text, image_scores, debug_message
 
 
 def answer_bot(answer, label, label_score, debug_message, context, update):
     if answer:
         update.message.reply_text(answer)
-        if  label in ['offensive']:
+        if label in ['offensive']:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
                                      chat_id=update.message.chat_id)
         elif label in ['hate'] and label_score < 0.7:
