@@ -70,11 +70,21 @@ debug = False
 def start_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user.name
-    message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages, currently limited to English language. I will process everything, but never store any user content permanently. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message. If you want to know more, please type /help."
+    message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages, currently limited to English language. Analyzing a meme takes some time for me, so please be patient. If you want to know more about how to interact with me, please type /howto. I will process everything, but never store anything else than temporarily logged user input, but NOT an id. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message. If you want to know more, please type /help."
     update.message.reply_text(message)
     update.message.reply_sticker('CAACAgQAAxkBAAECzc1hJk-ca5GJr_3DrbU2mr_4z1vUJwACFQoAAsnWMFGh76YrQgo2GyAE')
 
-
+def howto_command(update: Update, _: CallbackContext) -> None:
+    """Give more information about how to use the bot for command /howto."""
+    message = f"Text messages: You can write or forward text messages. If I think it is hateful or offensive, I will reply to it. However, if you edit your message I will not be able to analyze it again.\n"
+               "Voice messages: You can record and send a voice message and also forward one. I will transcribe it as good as I can. If I then think the transcription is hateful or offensive, I will reply to it.\n"
+               "Memes: You can upload memes in the usual formats or via an url ending in an image format. I will try to recognise the text on the meme and based on this estimate if it is hateful or not. Analyzing a meme takes some time for me, so please be patient. I will only reply if I consider your image hateful."
+               "Images: If you send an image and I think it is not a meme, I will not reply to it.\n"
+               "Everything you send, but NOT your user.id, will be temporarily logged so I can process your messages.")     
+ 
+    update.message.reply_text(message)
+    
+    
 def about_command(update: Update, _: CallbackContext) -> None:
     """Give more information about hate speech and the bot for the command /about."""
     message = f"Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factors (https://www.un.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS.pdf).\n\nTo prevent and handle hate speech, I classify each message, image and voice message and intervene if it was considered hateful or offensive. If you don't agree with my classification, you can type /poll to discuss the result with other group members (this feature is still in development). All messages sent in this group are processed (but never stored permanently) by me. If you don't agree to this processing, please type /optout and your messages will not be processed any more.\n\nHave fun and be nice!"
@@ -84,7 +94,7 @@ def about_command(update: Update, _: CallbackContext) -> None:
 def welcome_message(update: Update, context: CallbackContext) -> None:
     group = update.effective_chat.title
     users = ", ".join([x.name for x in update.message.new_chat_members if not x.is_bot])
-    message = f"Hello {users} and welcome to {group}! I am Modergator and keep an eye out for hateful content in this group. This means I am reading, seeing and listening to (but never storing) everything you and others write, send or speak.\n\nIf you don’t want me to process and moderate your data, please /optout.\n\nLearn more about hate speech here: /about."
+    message = f"Hello {users} and welcome to {group}! I am Modergator and keep an eye out for hateful content in this group. This means I am reading, seeing and listening to (but never storing) everything you and others write, send or speak. Analyzing a meme takes some time for me, so please be patient.\n\nIf you want to know more about how to interact with me, please type /howto.\n\nIf you don’t want me to process and moderate your data, please /optout.\n\nLearn more about hate speech here: /about."
     if users:
         context.bot.send_message(text=message, chat_id=update.message.chat_id)
         context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzc1hJk-ca5GJr_3DrbU2mr_4z1vUJwACFQoAAsnWMFGh76YrQgo2GyAE',
@@ -95,12 +105,13 @@ def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
                               'You can use the following commands:\n'
-                              '/help to get an overview of the commands\n'
+                              '/howto to learn more about how to interact with me\n'
                               '/optout to optout of the processing of your messages [this feature is in progress]\n'
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
                               '/poll to dispute the classification [this feature is in progress]\n'
                               '/debug to see Modergators internal workings\n'
-                              '/joke to make Modergator tell a joke')
+                              '/joke to make Modergator tell a joke'
+                              '/help to get an overview of the commands\n')
 
 
 def debug_command(update: Update, _: CallbackContext) -> None:
@@ -455,6 +466,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("optout", optout_command))
     dispatcher.add_handler(CommandHandler("joke", joke_command))
+    dispatcher.add_handler(CommandHandler("howto", howto_command))
     dispatcher.add_handler(CommandHandler("poll", poll_command))
     dispatcher.add_handler(CommandHandler("optin", optin_command))
     dispatcher.add_handler(CommandHandler("debug", debug_command))
