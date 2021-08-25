@@ -72,7 +72,7 @@ def start_command(update: Update, _: CallbackContext) -> None:
     user = update.effective_user.name
     message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages, currently limited to English language. I will process everything, but never store any user content permanently. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message. If you want to know more, please type /help."
     update.message.reply_text(message)
-    update.message.reply_sticker('CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE')
+    update.message.reply_sticker('CAACAgQAAxkBAAECzc1hJk-ca5GJr_3DrbU2mr_4z1vUJwACFQoAAsnWMFGh76YrQgo2GyAE')
 
 
 def about_command(update: Update, _: CallbackContext) -> None:
@@ -87,7 +87,7 @@ def welcome_message(update: Update, context: CallbackContext) -> None:
     message = f"Hello {users} and welcome to {group}! I am Modergator and keep an eye out for hateful content in this group. This means I am reading, seeing and listening to (but never storing) everything you and others write, send or speak.\n\nIf you don’t want me to process and moderate your data, please /optout.\n\nLearn more about hate speech here: /about."
     if users:
         context.bot.send_message(text=message, chat_id=update.message.chat_id)
-        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE',
+        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzc1hJk-ca5GJr_3DrbU2mr_4z1vUJwACFQoAAsnWMFGh76YrQgo2GyAE',
                                  chat_id=update.message.chat_id)
 
 
