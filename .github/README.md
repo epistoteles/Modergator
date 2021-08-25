@@ -68,17 +68,17 @@ Next, run the provided install script:
 ```
 source install.sh
 ```
-This does the following:
+This might take a few minutes. It does the following:
 - create several virtual environments
 - create user-specific configs
 - install all Python dependencies
 
-To run the bot you need to download the models and place them in the right folders as described below:
-* to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
-* to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  meme-model-api/vilio/input/viliou36/LASTtrain.pth"
-* to use the meme-detection-api you have to download the file "variables.data-00000-of-00001" from https://www.kaggle.com/katinka21/modergator-meme-detection-model-variable and place it into /meme-detection-api/meme_classification_EfficientNetB7/variables/variables.data-00000-of-00001
+Next, you need to download the bigger models, unzip them, and place them in the right folders as described below:
+* for the target API, add the model `hate_target.pth` from here https://www.kaggle.com/katinka21/modergator-target-detection-model to this location: `target-api/model/hate_target.pth`.
+* for the meme API, add the model `LASTtrain.pth` from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth to this location: `meme-model-api/vilio/input/viliou36/LASTtrain.pth`.
+* for the meme-detection-api, download the variable file `variables.data-00000-of-00001` from https://www.kaggle.com/katinka21/modergator-meme-detection-model-variable and place it into `/meme-detection-api/meme_classification_EfficientNetB7/variables/variables.data-00000-of-00001`.
 
-Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read messages.
+Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read other people's messages.
 
 You are ready to run the bot!
 
@@ -90,14 +90,15 @@ Important: running run.sh will kill all the screens you have currently active. I
 ```
 source run.sh
 ```
-This will start a virtual environment, install all dependencies inside it and start each program inside a screen session.
+This will start the virtual environments and start each API as well as the bot inside a screen session.
 You should now see the following sessions running:
--telegram-bot
--text-api
--ocr-api
--voice-api
--target-api
--meme-model-api
+- telegram-bot
+- meme-detection-api
+- target-api
+- asr-api
+- ocr-api
+- text-api
+- meme-model-api
 
 #### Error handling
 in case not all screen sessions could start, you can activate the virtual environment again by typing
