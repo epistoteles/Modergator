@@ -66,8 +66,8 @@ sudo apt-get -y install screen net-tools tesseract-ocr virtualenv ffmpeg
 This is the only step for which you need sudo rights.
 
 Next, you need to download the bigger models, unzip them, and place them in the right folders as described below:
-* for the target API, add the model `hate_target.pth` from here https://www.kaggle.com/katinka21/modergator-target-detection-model to this location: `target-api/model/hate_target.pth`.
-* for the meme API, add the model `LASTtrain.pth` from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth to this location: `meme-model-api/vilio/input/viliou36/LASTtrain.pth`.
+* for the target-api, add the model `hate_target.pth` from here https://www.kaggle.com/katinka21/modergator-target-detection-model to this location: `target-api/model/hate_target.pth`.
+* for the meme-model-api, add the model `LASTtrain.pth` from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth to this location: `meme-model-api/vilio/input/viliou36/LASTtrain.pth`.
 * for the meme-detection-api, download the variable file `variables.data-00000-of-00001` from https://www.kaggle.com/katinka21/modergator-meme-detection-model-variable and place it into `/meme-detection-api/meme_classification_EfficientNetB7/variables/variables.data-00000-of-00001`.
 
 Next, run the provided install script:
