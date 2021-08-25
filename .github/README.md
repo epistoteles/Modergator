@@ -26,7 +26,7 @@ Text messages are checked for whether they contain offensive and hateful speech,
 
 Memes are also checked for hate which arises due to the combination of text and an image.
 
-Currently, the bot can only understand the English language.
+Currently, the bot can only understand English language.
 
 ## 🎯 Key Features
 
@@ -50,13 +50,13 @@ As now, we have provided the following communication options with the bot:
 /optout: The user is added to an optoutlis and their messages are not analyzed anymore.
 /optin: The user's messages are analyzed again.
 /poll: All group members can vote for their classification (still in progress).
-/scores: A short explanation on how to interpret the classification scores.
+
 
 ## ⚙️ Installation
 
 To host an instance of the bot on your own, you will need run both the bot itself as well as multiple APIs handling the different kinds of messages. We have developed the bot to be hosted on an Ubuntu server, other systems might need an adaption.
 
-As the dependency torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you have to use python 3.8. This guide assumes you already have python 3.8 set up.
+As the dependency torch 1.4.0 (needed for the meme API) does **not work with python versions later than 3.8**, you have to use python 3.8. This guide assumes you already have python 3.8 set up.
 
 First, you need to install the following dependencies:
 ```
@@ -114,6 +114,11 @@ to start the API manually. For the meme-model-api you type
 source /memeenv/bin/activate
 python3 meme-model-api/main.py
 ```
+In case you run into errors concerning the torch version, make sure that you are really using Python 3.8 in the memeenv as python 3.9 cannot access torch 1.4. You can even try to run the following line in memeenv:
+```
+pip install torch==1.4.0 -f https://download.pytorch.org/whl/torch_stable.html
+```
+
 ## 🧱 Components
 
 Modergator consists of 6 APIs that the Telegram bot communicates with:
