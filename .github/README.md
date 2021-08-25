@@ -85,7 +85,7 @@ You are ready to run the bot!
 
 ### ▶ Running the Telegram Bot
 
-Important: running run.sh will kill all the screens you have currently active. If you don't want that, you have to comment it out. You have to then make sure to kill all the screens concerning the bot if you want to run run.sh again.
+Important: executing `run.sh` will kill all other screen sessions you have currently active. If you don't want that, you have to comment it out. You have to then make sure to kill all the screens concerning the bot if you want to run `run.sh` again.
 
 #### Start the bot:
 ```
