@@ -403,8 +403,16 @@ def score_image(image_url):
     r_ocr = requests.get(url=f"http://{HOSTDICT['ocr-api']}:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
+<<<<<<< HEAD
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
+=======
+    print(ocr_text)
+    print(conf)
+    conf = float(conf)
+    params = {"image": image_url, "image_description": ocr_text, "conf": conf}
+    r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
+>>>>>>> try to fix issues with ocr, not working
     if r.status_code == 200:
         r.raw.decode_content = True
         with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:
