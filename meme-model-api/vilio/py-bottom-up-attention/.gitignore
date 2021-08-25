@@ -38,3 +38,6 @@ dist/
 /detectron2/model_zoo/configs
 /datasets
 /models
+
+# modergator: delete input
+/data/img
