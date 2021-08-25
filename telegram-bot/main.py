@@ -297,8 +297,9 @@ def handle_image(update: Update, context: CallbackContext) -> None:
                 if detect_meme(value):
                         image_scores[value] = score_image(value)['result']
 
-
-
+                debug_message += f"The text was recognised with the following confidence:.\n"
+                debug_message += score_image(value)['conf']
+        
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
             text = update.message.caption
@@ -402,7 +403,9 @@ def score_image(image_url):
     params = {"path": image_url}
     r_ocr = requests.get(url=f"http://{HOSTDICT['ocr-api']}:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
+    conf = r_ocr.json()['conf']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
+<<<<<<< HEAD
 <<<<<<< HEAD
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
@@ -410,6 +413,8 @@ def score_image(image_url):
     print(ocr_text)
     print(conf)
     conf = float(conf)
+=======
+>>>>>>> add conf from ocr
     params = {"image": image_url, "image_description": ocr_text, "conf": conf}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
 >>>>>>> try to fix issues with ocr, not working
@@ -422,7 +427,7 @@ def score_image(image_url):
 
     data = r.json()
     print(f'    Scored image with ', {data['result']} )
-    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dic und nicht die variablen?
+    return {"result": data['result'], "ocr_text": ocr_text, "conf": conf} #TODO warum als dic und nicht die variablen?
 
 
 def score_text(text):

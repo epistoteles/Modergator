@@ -75,9 +75,13 @@ class OCR(MethodResource,Resource):
 =======
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
+<<<<<<< HEAD
 >>>>>>> fix ocr api
         return {'ocr_text': ocr_text}, 200
 >>>>>>> add Niklas new ocr, draft for downloading img
+=======
+        return {'ocr_text': ocr_text, 'conf': conf}, 200
+>>>>>>> add conf from ocr
 
 api.add_resource(OCR, '/ocr')  # add endpoints
 
