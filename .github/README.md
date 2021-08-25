@@ -79,7 +79,7 @@ This might take a few minutes. It does the following:
 - create user-specific configs
 - install all Python dependencies
 
-Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read other people's messages.
+Finally, you have to create a bot in the Telegram interface using the [Botfather bot](https://core.telegram.org/bots#6-botfather). You will get a message containing your Telegram bot credentials. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read other people's messages. You also need to make sure that /setjoingroups is enabled for your bot such that it can also be used in groups as well.
 
 You are ready to run the bot!
 
@@ -131,7 +131,7 @@ Something about the text api
 ### 📢 ASR API
 The purpose of the voice API is to transcribe Telegrams voice messages to text. They are then forwarded to the Text API.
 
-To achieve this, Telegrams .oga files are first converted to .wav files. They are then given to Facebooks [peech To Text Transformer (S2T)](https://huggingface.co/facebook/s2t-small-librispeech-asr).
+To achieve this, Telegrams .oga files are first converted to .wav files. They are then given to Facebooks [speech To Text Transformer (S2T)](https://huggingface.co/facebook/s2t-small-librispeech-asr).
 
 ### 🔡 OCR API
 
@@ -139,7 +139,7 @@ Something about the ocr api
 
 ### 🖼 Meme API
 
-The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
+The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). This model has been trained on the facebook dataset for multimodal natural language processing ([data set]https://ai.facebook.com/tools/hatefulmemes/). We added the prediction for a single meme as an input.
 TODO longer description
 
 Hint: Images that don't contain text won't return a response.
@@ -148,15 +148,16 @@ Hint: Images that don't contain text won't return a response.
 
 #### How the Target Detection works
 
-The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
+The target detection is based on the [HateXplain](https://github.com/hate-alert/HateXplain) data set. The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups which are for example Women, Christian or homosexual people.
 The telegram bot runs the target detection for all kinds of messages.
 
 ### Target Detection Model TODO
-The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: TODO
+The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: F1: 0.058, Precision: 0.3,  Recall: 0.032.
+
 
 The best model is then used to predict the target groups of incoming telegram messages if they achieve a classification higher than the threshold 0.4 on the sigmoid of the output of the model prediction.
 
--> the pth must be downloaded [TODO: link] and placed into target-api/model
+
 
 ### API Documentation
 
@@ -168,9 +169,3 @@ Thank you!
 
 ## ⚠️ License
 This repository has been published under the MIT license (see the file LICENSE.txt).
-
-
-
-# OLD STUFF
-This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio) which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
-There exists an option to opt out of the processing of messages for the group members.
