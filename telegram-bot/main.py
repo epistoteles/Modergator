@@ -366,8 +366,8 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores, debug_mess
         for x in ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
             image_ocr_text_escaped = image_ocr_text_escaped.replace(x, f'\\{x}')
         debug_message += f"``` Image:\n" \
-                         f"   classification: {'' if value else ' not'} hateful\.\n" \
-                         f"   transcription: \"{image_ocr_text_escaped}\"\n```"
+                         f"   classification:{'' if value else ' not'} hateful\.\n" \
+                         f"   transcription:  \"{image_ocr_text_escaped}\"\n```"
 
     return answer, image_ocr_text, image_scores, debug_message
 
