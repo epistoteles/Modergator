@@ -126,7 +126,7 @@ Modergator consists of 6 APIs that the Telegram bot communicates with:
 
 ### 📝 Text API
 
-Something about the text api
+In this API, the text message is used as an input for the HateXplain model (https://github.com/hate-alert/HateXplain). This model calculates a classification score indicating how likely the text messages consists of normal, offensive or hate speech. The scores are returned such that the bot can process the message further.
 
 ### 📢 ASR API
 The purpose of the voice API is to transcribe Telegrams voice messages to text. They are then forwarded to the Text API.
