@@ -26,7 +26,7 @@ Text messages are checked for whether they contain offensive and hateful speech,
 
 Memes are also checked for hate which arises due to the combination of text and an image.
 
-Currently, the bot can only understand English language.
+**Currently, the bot can only understand English language.**
 
 ## 🎯 Key Features
 
