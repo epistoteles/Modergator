@@ -358,6 +358,9 @@ def score_image(image_url):
     ocr_text = r_ocr.json()['ocr_text']
     conf = r_ocr.json()['conf']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
+    print(ocr_text)
+    print(conf)
+    conf = float(conf)
     params = {"image": image_url, "image_description": ocr_text, "conf": conf}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
     if r.status_code == 200:

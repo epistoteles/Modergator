@@ -41,6 +41,9 @@ class OCR(MethodResource,Resource):
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
+        print(ocr_text)
+        print(conf)
+        print('both from api')
         return {'ocr_text': ocr_text, 'conf': conf}, 200
 
 api.add_resource(OCR, '/ocr')  # add endpoints
