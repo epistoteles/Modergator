@@ -90,14 +90,15 @@ Important: running run.sh will kill all the screens you have currently active. I
 ```
 source run.sh
 ```
-This will start a virtual environment, install all dependencies inside it and start each program inside a screen session.
+This will start the virtual environments and start each API as well as the bot inside a screen session.
 You should now see the following sessions running:
--telegram-bot
--text-api
--ocr-api
--voice-api
--target-api
--meme-model-api
+- telegram-bot
+- meme-detection-api
+- target-api
+- asr-api
+- ocr-api
+- text-api
+- meme-model-api
 
 #### Error handling
 in case not all screen sessions could start, you can activate the virtual environment again by typing
