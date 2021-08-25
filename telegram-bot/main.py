@@ -114,11 +114,14 @@ def help_command(update: Update, _: CallbackContext) -> None:
                               '/help to get an overview of the commands\n')
 
 
-def debug_command(update: Update, _: CallbackContext) -> None:
+def debug_command(update: Update, context: CallbackContext) -> None:
     """Always print lots of info for debugging purposes."""
     global debug
     debug = not debug
     update.message.reply_text(f"Debug mode is now {'on' if debug else 'off'}.\n\n")
+    if debug:
+        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzilhJqt7WBEwVU_M_FCzmzhRv1dOsQACPQoAAtcCOVEnuAJJ5xegvSAE',
+                             chat_id=update.message.chat_id)
 
 
 def optout_command(update: Update, _: CallbackContext) -> None:
