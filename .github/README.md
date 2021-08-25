@@ -104,7 +104,7 @@ You should now see the following sessions running:
 #### Error handling
 in case not all screen sessions could start, you can activate the virtual environment again by typing
 ```
-source /veenv/bin/activate
+source /venv/bin/activate
 ```
 and then starting the corresponding python script in the modergator folder. In case the text-api did not start correctly, you would enter
 ```
