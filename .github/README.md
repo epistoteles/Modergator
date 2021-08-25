@@ -44,12 +44,13 @@ In order to interact with the bot, a Telegram account is needed. For instruction
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
-As now, we have provided the following communication options with the bot:
-- /help: this command lists all possible commands
-- /start: The welcome message and the guidelines are displayed when a user joins and when this command is entered.
-- /optout: The user is added to an optoutlis and their messages are not analyzed anymore.
-- /optin: The user's messages are analyzed again.
-- /poll: All group members can vote for their classification (still in progress).
+As of now, the bot provides the following commands:
+- /help to get an overview of the commands
+- /optout to optout of the processing of your messages
+- /optin to opt-in again to the processing of your messages
+- /poll to dispute the classification
+- /debug to see Modergators internal workings
+- /joke to make Modergator tell a joke
 
 
 ## ⚙️ Installation
