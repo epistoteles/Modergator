@@ -361,7 +361,7 @@ def answer_bot(answer, label, label_score, debug_message, context, update):
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
                                      chat_id=update.message.chat_id)
     if debug:
-        debug_message += f'\nScores range from 0 (not sure) to 1 (very sure).\nTo turn debug information off, type /debug\.'
+        debug_message += f'\nScores range from 0 \(not sure\) to 1 \(very sure\)\.\nTo turn debug information off, type /debug\.'
         context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
 
 
