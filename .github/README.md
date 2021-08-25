@@ -131,7 +131,7 @@ In this API, the text message is used as an input for the HateXplain model (http
 ### 📢 ASR API
 The purpose of the voice API is to transcribe Telegrams voice messages to text. They are then forwarded to the Text API.
 
-To achieve this, Telegrams .oga files are first converted to .wav files. They are then given to Facebooks [speech To Text Transformer (S2T)](https://huggingface.co/facebook/s2t-small-librispeech-asr).
+To achieve this, Telegrams .oga files are first converted to .wav files. They are then transcribed by Facebooks small [Speech To Text Transformer (S2T)](https://huggingface.co/facebook/s2t-small-librispeech-asr) trained on the librispeech dataset. Facebook provides models for multiple languages, but since all of our other components only support English we limited ourselves to the English model.
 
 ### 🔡 OCR API
 
@@ -139,17 +139,18 @@ Something about the ocr api
 
 ### 🖼 Meme API
 
-The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). This model has been trained on the facebook dataset for multimodal natural language processing ([data set]https://ai.facebook.com/tools/hatefulmemes/). We added the prediction for a single meme as an input.
+The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). This model has been trained on the Facebook dataset for multimodal natural language processing ([data set](https://ai.facebook.com/tools/hatefulmemes/)). We kept the model, but added the capability to give a prediction for a single meme as input.
 TODO longer description
 
-Hint: Images that don't contain text won't return a response.
+Hint: Images that don't contain text won't be forwarded to this api.
 
 ### 🧍‍♂️ Target API
 
 #### How the Target Detection works
 
-The target detection is based on the [HateXplain](https://github.com/hate-alert/HateXplain) data set. The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups which are for example Women, Christian or homosexual people.
-The telegram bot runs the target detection for all kinds of messages.
+The target detection is based on the [HateXplain](https://github.com/hate-alert/HateXplain) data set. The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups which are for example women, Christians or LGBTQ+ people.
+
+The telegram bot runs the target detection for all texts.
 
 ### Target Detection Model TODO
 The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: F1: 0.058, Precision: 0.3,  Recall: 0.032.
