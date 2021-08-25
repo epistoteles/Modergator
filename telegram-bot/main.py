@@ -137,12 +137,6 @@ def optin_command(update: Update, _: CallbackContext) -> None:
             f'You have already opted in. To opt out, use the /optout command.')
 
 
-def scores_command(update: Update, _: CallbackContext) -> None:
-    """Return a description of the classification scores when the command /scores is issued."""
-    update.message.reply_text(
-        f'A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure)')
-
-
 def joke_command(update: Update, _: CallbackContext) -> None:
     """Return a Chuck Norris dev joke when the command /joke is issued."""
     params = {"category": "dev"}
@@ -463,7 +457,6 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("joke", joke_command))
     dispatcher.add_handler(CommandHandler("poll", poll_command))
     dispatcher.add_handler(CommandHandler("optin", optin_command))
-    dispatcher.add_handler(CommandHandler("scores", scores_command))
     dispatcher.add_handler(CommandHandler("debug", debug_command))
     dispatcher.add_handler(CommandHandler("goodvibes", goodvibes_command))
     dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
