@@ -76,11 +76,11 @@ def start_command(update: Update, _: CallbackContext) -> None:
 
 def howto_command(update: Update, _: CallbackContext) -> None:
     """Give more information about how to use the bot for command /howto."""
-    message = f"Text messages: You can write or forward text messages. If I think it is hateful or offensive, I will reply to it. However, if you edit your message I will not be able to analyze it again.\n"
-               "Voice messages: You can record and send a voice message and also forward one. I will transcribe it as good as I can. If I then think the transcription is hateful or offensive, I will reply to it.\n"
-               "Memes: You can upload memes in the usual formats or via an url ending in an image format. I will try to recognise the text on the meme and based on this estimate if it is hateful or not. Analyzing a meme takes some time for me, so please be patient. I will only reply if I consider your image hateful."
-               "Images: If you send an image and I think it is not a meme, I will not reply to it.\n"
-               "Everything you send, but NOT your user.id, will be temporarily logged so I can process your messages.")     
+    message = f"Text messages: You can write or forward text messages. If I think it is hateful or offensive, I will reply to it. However, if you edit your message I will not be able to analyze it again.\n" \
+               "Voice messages: You can record and send a voice message and also forward one. I will transcribe it as good as I can. If I then think the transcription is hateful or offensive, I will reply to it.\n" \
+               "Memes: You can upload memes in the usual formats or via an url ending in an image format. I will try to recognise the text on the meme and based on this estimate if it is hateful or not. Analyzing a meme takes some time for me, so please be patient. I will only reply if I consider your image hateful." \
+               "Images: If you send an image and I think it is not a meme, I will not reply to it.\n" \
+               "Everything you send, but NOT your user.id, will be temporarily logged so I can process your messages."
  
     update.message.reply_text(message)
     
@@ -272,6 +272,8 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
         answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
         answer_bot(answer, label, label_score, debug_message, context, update)
+        context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzh9hJpr02fbzkfolQjjqj8FsOrsNfgACIwoAApmdQVPxErY3me_ggSAE',
+                                 chat_id=update.message.chat_id)  # TODO Voice Sticker
     else:
         pass
 
@@ -318,6 +320,8 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
         if answer:
             update.message.reply_text(answer)
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECzh9hJpr02fbzkfolQjjqj8FsOrsNfgACIwoAApmdQVPxErY3me_ggSAE',
+                                     chat_id=update.message.chat_id)
     else:
         pass
 
@@ -359,11 +363,14 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores):
 def answer_bot(answer, label, label_score, debug_message, context, update):
     if answer:
         update.message.reply_text(answer)
-        if  label in ['offensive', 'hate'] and label_score > 0.8:
+        if  label in ['offensive']:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
                                      chat_id=update.message.chat_id)
-        elif label in ['offensive', 'hate'] and label_score > 0.5:
+        elif label in ['hate'] and label_score < 0.7:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
+                                     chat_id=update.message.chat_id)
+        elif label in ['hate'] and label_score >= 0.7:
+            context.bot.send_sticker(sticker='CAACAgQAAxkBAAECziFhJpr7eX1xs3HCpaV_GIzoHWmyQAAC1w8AAriMSFOjwvkd64nNJCAE',
                                      chat_id=update.message.chat_id)
     if debug:
         debug_message += f'\nScores range from 0 \(not sure\) to 1 \(very sure\)\. To turn debug information off, type /debug\.'
