@@ -31,7 +31,8 @@ Currently, the bot can only understand the English language.
 ## 🎯 Key Features
 
 The bot will:
-- check texts, voice messages and memes for hate and intervene if necessary
+- check texts, voice messages and memes for hate
+- intervene if necessary
 
 Group members can:
 - dispute wrong classifications in a /poll
