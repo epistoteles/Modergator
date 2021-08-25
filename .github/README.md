@@ -20,24 +20,26 @@
 
 # 🐊 Modergator - Hate Detection for Text, Speech and Memes
 
-Modergator is a Telegram bot able to process multiple kinds of messages sent in a Telegram group.
+Modergator is a Telegram bot able to moderate Telegram groups for hateful content.
 
-Text messages are checked for hate speech and an evaluation of the offensiveness and hatefulness are given, as well as the targets that we have detected within the text (only if there are any). Voice messages are transcribed and then handled the same way as a text messages.
+Text messages are checked for whether they contain offensive and hateful speech, as well as the target groups that the speech is directed against (if there are any). Voice messages are transcribed and then handled the same way as a text messages.
 
 Memes are also checked for hate which arises due to the combination of text and an image.
 
-Currently, the bot can only understand english language.
-
-WARNING: The repository contains content that is offensive and/or hateful in nature.
+Currently, the bot can only understand the English language.
 
 ## 🎯 Key Features
 
-This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio) which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
-There exists an option to opt out of the processing of messages for the group members.
+The bot will:
+- check texts, voice messages and memes for hate and intervene if necessary
+
+Group members can:
+- dispute wrong classifications in a /poll
+- optionally /optout of data processing (GDPR-compliant)
 
 ## 💡 How To Use
 
-In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, you search for @modergator_bot in the search bar in the telegram application. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure). In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, search for @modergator_bot in the search bar. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure). In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
@@ -51,9 +53,9 @@ As now, we have provided the following communication options with the bot:
 
 ## ⚙️ Installation
 
-To host an instance of the bot on your own, you will need run both the bot itself as well as different APIs handling the kinds of messages. We have developed the bot to be hosted on an Ubuntu Server, other systems might need an adaption.
+To host an instance of the bot on your own, you will need run both the bot itself as well as multiple APIs handling the different kinds of messages. We have developed the bot to be hosted on an Ubuntu server, other systems might need an adaption.
 
-As the dependency torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you need to use python 3.8. This guide assumes you already have python 3.8 set up.
+As the dependency torch 1.4.0 (needed for the meme API) does not work with python versions later than 3.8, you have to use python 3.8. This guide assumes you already have python 3.8 set up.
 
 First, you need to install the following dependencies:
 ```
@@ -112,21 +114,30 @@ python3 meme-model-api/main.py
 ```
 ## 🧱 Components
 
-### Documentation
+Modergator consists of 6 APIs that the Telegram bot communicates with:
 
-We have documented our code with Swagger. The Swagger links will displayed in the terminal after running source run.sh.
+### 📝 Text API
+
+Something about the text api
+
+### 📢 ASR API
+The purpose of the voice API is to transcribe Telegrams voice messages to text. They are then forwarded to the Text API.
+
+To achieve this, Telegrams .oga files are first converted to .wav files. They are then given to Facebooks [peech To Text Transformer (S2T)](https://huggingface.co/facebook/s2t-small-librispeech-asr).
+
+### 🔡 OCR API
+
+Something about the ocr api
 
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). We have added the prediction for a single meme as an input.
 TODO longer description
 
-Hint: Images that don't contain a text won't return a response.
-
-### 📢 Voice API
-TODO
+Hint: Images that don't contain text won't return a response.
 
 ### 🧍‍♂️ Target API
+
 #### How the Target Detection works
 
 The target detection is based on the HateXplain data set (see https://github.com/hate-alert/HateXplain). The dataset contains annotated tweets which have been labeled by three annotators each as hate speech, offensive or normal language. The detection is trained on the dataset and returns a list of possibly discriminated target groups.
@@ -139,9 +150,19 @@ The best model is then used to predict the target groups of incoming telegram me
 
 -> the pth must be downloaded [TODO: link] and placed into target-api/model
 
+### API Documentation
+
+We have documented our code with Swagger. The Swagger links will displayed in the terminal after running source run.sh.
+
 ## ‎‍💻 Contributors
-The bot has been created in the Master's project at Universität Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection have been contributed by Niklas von Boguszewski and Fabian Rausch has helped us immensely building the target group detection model. For the Meme API, we have used VILIO by Niklas Muennighoff.
+This project is maintained by Katrin ([@katrinc](https://github.com/katrinc)), Korbinian ([@Epistoteles](https://github.com/Epistoteles)) and Skadi ([@julchen98](https://github.com/julchen98)). It has been created as part of a seminar at University of Hamburg under the supervision of Prof. Dr. Chris Biemann, Dr. Özge Alaçam and Dr. Seid Muhie Yimam. The OCR and the meme detection components have been contributed by Niklas von Boguszewski. Fabian Rausch has helped us immensely building the target group detection model. For the Meme API, we have used VILIO by Niklas Muennighoff.
 Thank you!
 
 ## ⚠️ License
-This repository has been licensed with MIT (see the file LICENSE).
+This repository has been published under the MIT license (see the file LICENSE.txt).
+
+
+
+# OLD STUFF
+This bot checks incoming messages for hate speech and offensive language based on the HateXplain dataset and model (https://github.com/hate-alert/HateXplain). Memes are analyzed with vilio (https://github.com/Muennighoff/vilio) which has been trained on the Facebook dataset for multimodal natural language processing (https://ai.facebook.com/tools/hatefulmemes/). Furthermore, the content is checked for possible offended target groups by a model based on the hateXplain dataset.
+There exists an option to opt out of the processing of messages for the group members.
