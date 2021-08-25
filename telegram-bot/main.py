@@ -70,7 +70,7 @@ debug = False
 def start_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user.name
-    message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages. I will process everything, but never store any user content permanently. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message."
+    message = f"Hello {user}!\n\nI am Modergator and able to keep an eye out for hateful content in any group that you add me to. If hate speech or offensive messages are detected, I will automatically intervene. I am able to understand text, memes and voice messages, currently limited to English language. I will process everything, but never store any user content permanently. Users are able to opt-out of this on an individual basis.\n\nHow to use me: Simply add me as a group member in your group. I am always listening in the background.\n\nYou can try out my skills right here in the chat. Simply send a text, image or voice message. If you want to know more, please type /help."
     update.message.reply_text(message)
     update.message.reply_sticker('CAACAgQAAxkBAAECyjBhIlAVTFHB_e98hPm1iA_Kr-kxBgAC9QkAAkosSFP37HWaf8exOCAE')
 
