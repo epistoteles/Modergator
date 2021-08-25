@@ -136,12 +136,11 @@ To achieve this, Telegrams .oga files are first converted to .wav files. They ar
 
 ### 🔡 OCR API
 
-Something about the ocr api
+The OCR has been developed by Niklas von Boguszewski, we have included the code into an API such that the bot can send an image to this API. The models analyzes the text which is on the image and returns it to the bot.
 
 ### 🖼 Meme API
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). This model has been trained on the Facebook dataset for multimodal natural language processing ([data set](https://ai.facebook.com/tools/hatefulmemes/)). We kept the model, but added the capability to give a prediction for a single meme as input.
-TODO longer description
 
 Hint: Images that don't contain text won't be forwarded to this api.
 
@@ -153,7 +152,7 @@ The target detection is based on the [HateXplain](https://github.com/hate-alert/
 
 The telegram bot runs the target detection for all texts.
 
-### Target Detection Model TODO
+### Target Detection Model
 The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: F1: 0.058, Precision: 0.3,  Recall: 0.032.
 
 
