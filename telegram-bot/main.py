@@ -378,10 +378,10 @@ def answer_bot(answer, label, label_score, debug_message, context, update):
         if label in ['offensive']:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynRhIpFGQOdm7y-TY1FrRx3viIVZzgAC7QgAAnjTQFOyIhXLSEwbjiAE',
                                      chat_id=update.message.chat_id)
-        elif label in ['hate'] and label_score < 0.7:
+        elif label in ['hate'] and label_score < 0.6:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECynJhIpFAWoXulQIFegHdKvtbweVWEQACzQkAAiu4SVOn7vfLIW3CcSAE',
                                      chat_id=update.message.chat_id)
-        elif label in ['hate'] and label_score >= 0.7:
+        elif label in ['hate'] and label_score >= 0.6:
             context.bot.send_sticker(sticker='CAACAgQAAxkBAAECziFhJpr7eX1xs3HCpaV_GIzoHWmyQAAC1w8AAriMSFOjwvkd64nNJCAE',
                                      chat_id=update.message.chat_id)
     if debug:
