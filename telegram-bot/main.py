@@ -76,11 +76,11 @@ def start_command(update: Update, _: CallbackContext) -> None:
 
 def howto_command(update: Update, _: CallbackContext) -> None:
     """Give more information about how to use the bot for command /howto."""
-    message = f"Text messages: You can write or forward text messages. If I think it is hateful or offensive, I will reply to it. However, if you edit your message I will not be able to analyze it again.\n" \
-               "Voice messages: You can record and send a voice message and also forward one. I will transcribe it as good as I can. If I then think the transcription is hateful or offensive, I will reply to it.\n" \
-               "Memes: You can upload memes in the usual formats or via an url ending in an image format. I will try to recognise the text on the meme and based on this estimate if it is hateful or not. Analyzing a meme takes some time for me, so please be patient. I will only reply if I consider your image hateful." \
-               "Images: If you send an image and I think it is not a meme, I will not reply to it.\n" \
-               "Everything you send, but NOT your user.id, will be temporarily logged so I can process your messages."
+    message = f"Text messages:\nYou can write or forward text messages. If I think it is hateful or offensive, I will reply to it. However, if you edit your message I will not be able to analyze it again.\n\n" \
+               "Voice messages:\nYou can record and send a voice message and also forward one. I will transcribe it as good as I can. If I then think the transcription is hateful or offensive, I will reply to it.\n\n" \
+               "Memes:\nYou can upload memes directly from your phone or send links ending in an image format. I will try to recognise the text on the meme and based on this estimate as well as the visuals if it is hateful or not. Analyzing a meme takes some time, so please be patient. I will only reply if I consider your image hateful.\n\n" \
+               "Images:\nIf you send an image and I think it is not a meme, I will not reply to it.\n\n" \
+               "Everything you send (always anonymized) will be temporarily logged so I can process your messages."
  
     update.message.reply_text(message)
     
@@ -106,9 +106,9 @@ def help_command(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('I am Modergator and keep an eye out for hateful messages in this group.\n'
                               'You can use the following commands:\n'
                               '/howto to learn more about how to interact with me\n'
-                              '/optout to optout of the processing of your messages [this feature is in progress]\n'
-                              '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
-                              '/poll to dispute the classification [this feature is in progress]\n'
+                              '/optout to optout of the processing of your messages\n'
+                              '/optin to opt-in again to the processing of your messages\n'
+                              '/poll to dispute the classification (this feature is in progress)\n'
                               '/debug to see Modergators internal workings\n'
                               '/joke to make Modergator tell a joke\n'
                               '/help to get an overview of the commands\n')
@@ -316,7 +316,7 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         answer, image_ocr_text, image_scores, debug_message = return_score_url(file_path, answer,image_ocr_text,image_scores, debug_message)
 
         target_groups = score_target(image_ocr_text)
-        if target_groups and image_scores:
+        if target_groups and image_scores['sent from your device']:
             answer += f"your hate was probably directed towards the following group(s): {target_groups}.\n"
 
         if answer:
