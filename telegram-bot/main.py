@@ -110,7 +110,7 @@ def help_command(update: Update, _: CallbackContext) -> None:
                               '/optin to opt-in again to the processing of your messages [this feature is in progress]\n'
                               '/poll to dispute the classification [this feature is in progress]\n'
                               '/debug to see Modergators internal workings\n'
-                              '/joke to make Modergator tell a joke'
+                              '/joke to make Modergator tell a joke\n'
                               '/help to get an overview of the commands\n')
 
 
@@ -272,7 +272,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
             file_path = context.bot.getFile(file_id).file_path
 
         text = voice_to_text(file_path)
-        answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
+        answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
 
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
@@ -339,7 +339,7 @@ def return_score_text_and_target(text,answer,debug_message,type):
         if len(target_groups) > 0:
             answer += f"Your hate was probably directed towards the following group(s): {target_groups}.\n\n"
         answer += f"If you think I made a mistake, use the /poll command to start a dispute.\n\n"
-    if(type=="asr"):
+    if(type=="voice"):
         debug_message += f"``` Transcribed text:\n" \
                          f"   {text}\n" \
                          f"```"
