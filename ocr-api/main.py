@@ -22,6 +22,7 @@ class OCRClassifierRequestSchema(Schema):
 
 class OCRClassifierResponseSchema(Schema):
     ocr_text = fields.Str(description="The recognised text form the given image/meme.")
+    conf = fields.Str(description="The confidence socre of the ocr text.")
 
 class OCR(MethodResource,Resource):
 
@@ -41,8 +42,8 @@ class OCR(MethodResource,Resource):
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
-        print(ocr_text)
-        print(conf)
+        print('ocr:', ocr_text)
+        print('conf', conf)
         print('both from api')
         return {'ocr_text': ocr_text, 'conf': conf}, 200
 
