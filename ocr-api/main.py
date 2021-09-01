@@ -9,30 +9,10 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 #import ocr
 import analysis_utility
 import urllib
 import urllib.request
-<<<<<<< HEAD
-=======
-import ocr
-=======
-#import ocr
->>>>>>> fix ocr api
-import analysis_utility
-<<<<<<< HEAD
->>>>>>> try to import analysis_utility.py not working yet
-=======
-import urllib
-import urllib.request
->>>>>>> add Niklas new ocr, draft for downloading img
-=======
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 app = Flask(__name__)
 api = Api(app)
@@ -59,11 +39,6 @@ class OCR(MethodResource,Resource):
         print(file_ending)
         filename = "10000" + "." + file_ending
         urllib.request.urlretrieve(path, filename)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
@@ -71,40 +46,6 @@ class OCR(MethodResource,Resource):
         print('conf', conf)
         print('both from api')
         return {'ocr_text': ocr_text, 'conf': conf}, 200
-<<<<<<< HEAD
-=======
-        analysis_utility.do_ocr(r'../filename')
-        #ocr_text = "test"
-=======
-        print(os.getcwd())
-<<<<<<< HEAD
-        analysis_utility.do_ocr(filename)
-        print('ocr success')
->>>>>>> fix cuda bugs
-        ocr_text, conf = analysis_utility.do_ocr(path, custom_config = r'--oem 1 --psm 8')
-=======
-        print(filename)
-        ocr_text, conf = analysis_utility.do_ocr(filename)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> fix ocr api
-        return {'ocr_text': ocr_text}, 200
->>>>>>> add Niklas new ocr, draft for downloading img
-=======
-=======
-        print(ocr_text)
-        print(conf)
-=======
-        print('ocr:', ocr_text)
-        print('conf', conf)
->>>>>>> added print statement
-        print('both from api')
->>>>>>> try to fix issues with ocr, not working
-        return {'ocr_text': ocr_text, 'conf': conf}, 200
->>>>>>> add conf from ocr
-=======
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 api.add_resource(OCR, '/ocr')  # add endpoints
 

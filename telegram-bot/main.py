@@ -294,16 +294,12 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
                 print(f'    Scoring caption image URL {value}')
-<<<<<<< HEAD
                 if detect_meme(value):
                         image_scores[value] = score_image(value)['result']
-=======
-                image_scores[value] = score_image(value)['result']
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
                 debug_message += f"The text was recognised with the following confidence:.\n"
                 debug_message += score_image(value)['conf']
-        
+
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
             text = update.message.caption
@@ -409,31 +405,13 @@ def score_image(image_url):
     ocr_text = r_ocr.json()['ocr_text']
     conf = r_ocr.json()['conf']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
-=======
     print(ocr_text)
     print(conf)
     conf = float(conf)
-=======
->>>>>>> add conf from ocr
-=======
-    print(ocr_text)
-    print(conf)
-    conf = float(conf)
->>>>>>> try to fix issues with ocr, not working
-=======
-    print(ocr_text)
-    print(conf)
-    conf = float(conf)
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
     params = {"image": image_url, "image_description": ocr_text, "conf": conf}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
->>>>>>> try to fix issues with ocr, not working
     if r.status_code == 200:
         r.raw.decode_content = True
         with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:

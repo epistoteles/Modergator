@@ -9,54 +9,25 @@ import model.imgproc as imgproc
 import cv2
 from torch.autograd import Variable
 from operator import itemgetter
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-=======
->>>>>>> added all relevant files of Niklas
-=======
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
->>>>>>> add Niklas new ocr, draft for downloading img
-=======
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 def build_model():
     # load net
     net = CRAFT()     # initialize
 
     # Load weights
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
 
     net = net.to(device)
-=======
-    net.load_state_dict(copyStateDict(torch.load('model/craft_mlt_25k.pth')))
-
-    net = net.cuda()
->>>>>>> added all relevant files of Niklas
-=======
-    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
-
-    net = net.to(device)
->>>>>>> add Niklas new ocr, draft for downloading img
-=======
-    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
-
-    net = net.to(device)
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = False
-    
+
     return net
-    
+
 def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
-    
+
     t0 = time.time()
-    
+
     # resize
     img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, square_size=1280, interpolation=cv2.INTER_LINEAR, mag_ratio=1.5)
     ratio_h = ratio_w = 1 / target_ratio
@@ -65,23 +36,8 @@ def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, p
     x = imgproc.normalizeMeanVariance(img_resized)
     x = torch.from_numpy(x).permute(2, 0, 1)    # [h, w, c] to [c, h, w]
     x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     #if cuda:
     #    x = x.cuda()
-=======
-    if cuda:
-        x = x.cuda()
->>>>>>> added all relevant files of Niklas
-=======
-    #if cuda:
-    #    x = x.cuda()
->>>>>>> fix ocr api
-=======
-    #if cuda:
-    #    x = x.cuda()
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
     # forward pass
     with torch.no_grad():
@@ -127,16 +83,4 @@ def copyStateDict(state_dict):
     for k, v in state_dict.items():
         name = ".".join(k.split(".")[start_idx:])
         new_state_dict[name] = v
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     return new_state_dict
-=======
-    return new_state_dict
->>>>>>> added all relevant files of Niklas
-=======
-    return new_state_dict
->>>>>>> add Niklas new ocr, draft for downloading img
-=======
-    return new_state_dict
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13

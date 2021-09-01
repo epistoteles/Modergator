@@ -10,19 +10,7 @@ net = text_scene_detection_utility.build_model()
 def do_ocr(path, custom_config=r'--oem 1 --psm 8'):
 
     img_list = img_utility.load_img(path)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=False, poly=False, refine_net=None)
-=======
-    bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=True, poly=False, refine_net=None)
->>>>>>> added all relevant files of Niklas
-=======
-    bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=False, poly=False, refine_net=None)
->>>>>>> fix cuda bugs
-=======
-    bounding_boxes, b, ret_score_text = text_scene_detection_utility.text_detection(net, img_list, text_threshold=0.8, link_threshold=0.4, low_text=0.4, cuda=False, poly=False, refine_net=None)
->>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
     if len(bounding_boxes) == 0:
         return '', 100
