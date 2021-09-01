@@ -77,6 +77,7 @@ class OCR(MethodResource,Resource):
         ocr_text, conf = analysis_utility.do_ocr(filename)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> fix ocr api
         return {'ocr_text': ocr_text}, 200
 >>>>>>> add Niklas new ocr, draft for downloading img
@@ -84,6 +85,10 @@ class OCR(MethodResource,Resource):
 =======
         print(ocr_text)
         print(conf)
+=======
+        print('ocr:', ocr_text)
+        print('conf', conf)
+>>>>>>> added print statement
         print('both from api')
 >>>>>>> try to fix issues with ocr, not working
         return {'ocr_text': ocr_text, 'conf': conf}, 200
