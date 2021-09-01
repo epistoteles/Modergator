@@ -294,8 +294,12 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
                 print(f'    Scoring caption image URL {value}')
+<<<<<<< HEAD
                 if detect_meme(value):
                         image_scores[value] = score_image(value)['result']
+=======
+                image_scores[value] = score_image(value)['result']
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
                 debug_message += f"The text was recognised with the following confidence:.\n"
                 debug_message += score_image(value)['conf']
@@ -408,6 +412,7 @@ def score_image(image_url):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
 =======
@@ -421,6 +426,11 @@ def score_image(image_url):
     print(conf)
     conf = float(conf)
 >>>>>>> try to fix issues with ocr, not working
+=======
+    print(ocr_text)
+    print(conf)
+    conf = float(conf)
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
     params = {"image": image_url, "image_description": ocr_text, "conf": conf}
     r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
 >>>>>>> try to fix issues with ocr, not working

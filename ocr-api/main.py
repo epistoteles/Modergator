@@ -11,10 +11,14 @@ from marshmallow import Schema, fields
 import pickle
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 #import ocr
 import analysis_utility
 import urllib
 import urllib.request
+<<<<<<< HEAD
 =======
 import ocr
 =======
@@ -27,6 +31,8 @@ import analysis_utility
 import urllib
 import urllib.request
 >>>>>>> add Niklas new ocr, draft for downloading img
+=======
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 app = Flask(__name__)
 api = Api(app)
@@ -55,6 +61,9 @@ class OCR(MethodResource,Resource):
         urllib.request.urlretrieve(path, filename)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
         print(os.getcwd())
         print(filename)
         ocr_text, conf = analysis_utility.do_ocr(filename)
@@ -62,6 +71,7 @@ class OCR(MethodResource,Resource):
         print('conf', conf)
         print('both from api')
         return {'ocr_text': ocr_text, 'conf': conf}, 200
+<<<<<<< HEAD
 =======
         analysis_utility.do_ocr(r'../filename')
         #ocr_text = "test"
@@ -93,6 +103,8 @@ class OCR(MethodResource,Resource):
 >>>>>>> try to fix issues with ocr, not working
         return {'ocr_text': ocr_text, 'conf': conf}, 200
 >>>>>>> add conf from ocr
+=======
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 api.add_resource(OCR, '/ocr')  # add endpoints
 

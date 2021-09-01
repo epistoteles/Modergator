@@ -2,6 +2,7 @@ import pytesseract
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
 =======
 pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -9,6 +10,9 @@ pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tessera
 =======
 #pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
 >>>>>>> fix ocr api
+=======
+#pytesseract.pytesseract.tesseract_cmd = r'D:\Program Files\Tesseract-OCR\tesseract.exe'
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 def image_to_text(croped_images, custom_config):
     
@@ -40,6 +44,7 @@ def image_to_text(croped_images, custom_config):
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     return text[:-1], conf
 =======
     return text[:-1], conf
@@ -47,3 +52,6 @@ def image_to_text(croped_images, custom_config):
 =======
     return text[:-1], conf
 >>>>>>> fix ocr api
+=======
+    return text[:-1], conf
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13

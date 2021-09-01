@@ -11,18 +11,23 @@ from torch.autograd import Variable
 from operator import itemgetter
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 =======
 >>>>>>> added all relevant files of Niklas
 =======
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 >>>>>>> add Niklas new ocr, draft for downloading img
+=======
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
 def build_model():
     # load net
     net = CRAFT()     # initialize
 
     # Load weights
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
@@ -38,6 +43,11 @@ def build_model():
 
     net = net.to(device)
 >>>>>>> add Niklas new ocr, draft for downloading img
+=======
+    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
+
+    net = net.to(device)
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = False
     
@@ -57,6 +67,7 @@ def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, p
     x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     #if cuda:
     #    x = x.cuda()
 =======
@@ -67,6 +78,10 @@ def text_detection(net, image, text_threshold, link_threshold, low_text, cuda, p
     #if cuda:
     #    x = x.cuda()
 >>>>>>> fix ocr api
+=======
+    #if cuda:
+    #    x = x.cuda()
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
 
     # forward pass
     with torch.no_grad():
@@ -114,6 +129,7 @@ def copyStateDict(state_dict):
         new_state_dict[name] = v
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     return new_state_dict
 =======
     return new_state_dict
@@ -121,3 +137,6 @@ def copyStateDict(state_dict):
 =======
     return new_state_dict
 >>>>>>> add Niklas new ocr, draft for downloading img
+=======
+    return new_state_dict
+>>>>>>> 4991298cebf79f2f5678780bbeee0740e508ed13
