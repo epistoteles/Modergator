@@ -334,9 +334,6 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         pass
 
 def return_score_text_and_target(text,answer,debug_message,type):
-
-
-def return_score_text_and_target(text,answer,debug_message,type):
     label, label_score, scores = score_text(text)
     if label in ['offensive', 'hate']:
         answer += f"{'I am sure' if label_score > 0.8 else 'I am quite sure' if label_score > 0.65 else 'I think'} that this {type} message is {label}. Please be nice and stick to the community guidelines.\n\n"
@@ -456,15 +453,6 @@ def detect_meme(url):
     is_meme = r.json()["result"]
     print("is_meme: ", is_meme)
     return is_meme
-
-def detect_meme(url):
-    print("Start Meme Detection")
-    params = {"url": url}
-    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['meme-detection-api']}/classifier", params=params)
-    is_meme = r.json()["result"]
-    print("is_meme: ", is_meme)
-    return is_meme
-
 
 def voice_to_text(voice_url):
     """Receives voice URL and returns text"""
