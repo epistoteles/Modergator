@@ -81,10 +81,10 @@ def howto_command(update: Update, _: CallbackContext) -> None:
                "Memes:\nYou can upload memes directly from your phone or send links ending in an image format. I will try to recognise the text on the meme and based on this estimate as well as the visuals if it is hateful or not. Analyzing a meme takes some time, so please be patient. I will only reply if I consider your image hateful.\n\n" \
                "Images:\nIf you send an image and I think it is not a meme, I will not reply to it.\n\n" \
                "Everything you send (always anonymized) will be temporarily logged so I can process your messages."
- 
+
     update.message.reply_text(message)
-    
-    
+
+
 def about_command(update: Update, _: CallbackContext) -> None:
     """Give more information about hate speech and the bot for the command /about."""
     message = f"Hate speech is any kind of communication that attacks or uses pejorative or discriminatory language with reference to a person or a group on the basis of who they are, in other words, based on their religion, ethnicity, nationality, race, colour, descent, gender or other identity factors (https://www.un.org/en/genocideprevention/documents/UN%20Strategy%20and%20Plan%20of%20Action%20on%20Hate%20Speech%2018%20June%20SYNOPSIS.pdf).\n\nTo prevent and handle hate speech, I classify each message, image and voice message and intervene if it was considered hateful or offensive. If you don't agree with my classification, you can type /poll to discuss the result with other group members (this feature is still in development). All messages sent in this group are processed (but never stored permanently) by me. If you don't agree to this processing, please type /optout and your messages will not be processed any more.\n\nHave fun and be nice!"
@@ -246,8 +246,9 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         entities = update.message.parse_entities()
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
+                #KATRIN: detection API
                 if detect_meme(value):
-                    answer, image_ocr_text, image_scores, debug_message = return_score_url(value, answer, image_ocr_text, image_scores, debug_message)
+                    answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
 
         """use hateXplain to evaluate text messages, return label and scores"""
         text = update.message.text
@@ -256,7 +257,6 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
         pass
-
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
@@ -272,7 +272,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
             file_path = context.bot.getFile(file_id).file_path
 
         text = voice_to_text(file_path)
-        answer, label, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"voice")
+        answer, lable, debug_message, label_score = return_score_text_and_target(text,answer,debug_message,"asr")
 
         answer_bot(answer, label, label_score, debug_message, context, update)
     else:
@@ -296,6 +296,9 @@ def handle_image(update: Update, context: CallbackContext) -> None:
                 print(f'    Scoring caption image URL {value}')
                 if detect_meme(value):
                         image_scores[value] = score_image(value)['result']
+
+                debug_message += f"The text was recognised with the following confidence:.\n"
+                debug_message += score_image(value)['conf']
 
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
@@ -329,7 +332,6 @@ def handle_image(update: Update, context: CallbackContext) -> None:
 
     else:
         pass
-
 
 def return_score_text_and_target(text,answer,debug_message,type):
     label, label_score, scores = score_text(text)
@@ -398,9 +400,15 @@ def score_image(image_url):
     params = {"path": image_url}
     r_ocr = requests.get(url=f"http://{HOSTDICT['ocr-api']}:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
+    conf = r_ocr.json()['conf']
     print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
     params = {"image": image_url, "image_description": ocr_text}
     r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
+    print(ocr_text)
+    print(conf)
+    conf = float(conf)
+    params = {"image": image_url, "image_description": ocr_text, "conf": conf}
+    r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
     if r.status_code == 200:
         r.raw.decode_content = True
         with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:
@@ -410,7 +418,7 @@ def score_image(image_url):
 
     data = r.json()
     print(f'    Scored image with ', {data['result']} )
-    return {"result": data['result'], "ocr_text": ocr_text} #TODO warum als dict und nicht die variablen?
+    return {"result": data['result'], "ocr_text": ocr_text, "conf": conf} #TODO warum als dic und nicht die variablen?
 
 
 def score_text(text):
@@ -438,7 +446,6 @@ def score_target(text):
     print("scored targets: ", target_groups)
     return target_groups
 
-
 def detect_meme(url):
     print("Start Meme Detection")
     params = {"url": url}
@@ -446,7 +453,6 @@ def detect_meme(url):
     is_meme = r.json()["result"]
     print("is_meme: ", is_meme)
     return is_meme
-
 
 def voice_to_text(voice_url):
     """Receives voice URL and returns text"""

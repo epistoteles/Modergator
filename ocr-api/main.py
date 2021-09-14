@@ -9,7 +9,10 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields
 import pickle
-import ocr
+#import ocr
+import analysis_utility
+import urllib
+import urllib.request
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,6 +22,7 @@ class OCRClassifierRequestSchema(Schema):
 
 class OCRClassifierResponseSchema(Schema):
     ocr_text = fields.Str(description="The recognised text form the given image/meme.")
+    conf = fields.Str(description="The confidence socre of the ocr text.")
 
 class OCR(MethodResource,Resource):
 
@@ -30,9 +34,18 @@ class OCR(MethodResource,Resource):
         parser.add_argument('path', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
         path = args['path']
-
-        ocr_text = ocr.do_ocr(path, custom_config = r'--oem 1 --psm 8')
-        return {'ocr_text': ocr_text}, 200
+        print(path)
+        file_ending = path.split(".")[-1]
+        print(file_ending)
+        filename = "10000" + "." + file_ending
+        urllib.request.urlretrieve(path, filename)
+        print(os.getcwd())
+        print(filename)
+        ocr_text, conf = analysis_utility.do_ocr(filename)
+        print('ocr:', ocr_text)
+        print('conf', conf)
+        print('both from api')
+        return {'ocr_text': ocr_text, 'conf': conf}, 200
 
 api.add_resource(OCR, '/ocr')  # add endpoints
 
