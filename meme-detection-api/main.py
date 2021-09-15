@@ -25,6 +25,7 @@ app = Flask(__name__)
 api = Api(app)
 
 saved_model = tf.keras.models.load_model('meme-detection-api/meme_classification_EfficientNetB7')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'}
 
 class DetectionRequestSchema(Schema):
     url = fields.Str(required=True, description="The path/url to an image/meme.")
@@ -46,26 +47,31 @@ class Detection(MethodResource,Resource):
         class_indices = {'meme': 0, 'not_meme': 1}
 
         detection = False
-        try:
+        original_filename = image_url.split("/")[-1]
+        if self.validate_file(original_filename):
             file_ending = image_url.split(".")[-1]
             filename = "meme_detection_image" + "." + file_ending
-            urllib.request.urlretrieve(image_url, filename)
+            try:
+                urllib.request.urlretrieve(image_url, filename)
 
-            img = Image.open(filename)
-            img = img.resize((600,600))
-            x = np.asarray(img)
-            x = x.reshape(1,600,600,3)
+                img = Image.open(filename)
+                img = img.resize((600,600))
 
-            pred = saved_model.predict(x)
-            result = list(class_indices.keys())[int(round(pred[0][0]))]
-            print("result: ", class_indices[result])
+                x = np.asarray(img)
+                x = x.reshape(1,600,600,3)
 
-            if class_indices[result]==0:
-                detection = True
-            os.remove(filename)
-        except urllib.error.HTTPError as exception:
-            print(exception, ", therefore using False as default.")
+                pred = saved_model.predict(x)
+                result = list(class_indices.keys())[int(round(pred[0][0]))]
+
+                if class_indices[result]==0:
+                    detection = True
+                os.remove(filename)
+            except urllib.error.HTTPError as exception:
+                print(exception, ", therefore using False as default.")
         return {"result": detection}, 200
+
+    def validate_file(self, filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 api.add_resource(Detection, '/classifier')  # add endpoints
 

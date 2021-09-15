@@ -34,17 +34,21 @@ class OCR(MethodResource,Resource):
         parser.add_argument('path', required=True)  # add args
         args = parser.parse_args()  # parse arguments to dictionary
         path = args['path']
-        print(path)
         file_ending = path.split(".")[-1]
-        print(file_ending)
-        filename = "10000" + "." + file_ending
-        urllib.request.urlretrieve(path, filename)
-        print(os.getcwd())
-        print(filename)
-        ocr_text, conf = analysis_utility.do_ocr(filename)
-        print('ocr:', ocr_text)
-        print('conf', conf)
-        print('both from api')
+        filename = "ocr_image" + "." + file_ending
+        try:
+            urllib.request.urlretrieve(path, filename)
+            print(os.getcwd())
+            print(filename)
+            ocr_text, conf = analysis_utility.do_ocr(filename)
+            print('ocr:', ocr_text)
+            print('conf', conf)
+            print('both from api')
+            # clean_up
+            os.remove(filename)
+        # any error: always delete saved image(s)
+        except:
+            os.remove(filename)
         return {'ocr_text': ocr_text, 'conf': conf}, 200
 
 api.add_resource(OCR, '/ocr')  # add endpoints

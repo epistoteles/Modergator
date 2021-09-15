@@ -75,13 +75,16 @@ class Model(MethodResource,Resource):
                 f.write(rep)
                 f.close()
 
-            json_file = self.create_json(
-                file_ending, only_filename, image_description)
-            self.extract_features()
-            score = self.calculate_score()
-            score_float = float(score)
-            print(score_float)
-            hate_value = self.calculate_hate(score_float)
+            try:
+                json_file = self.create_json(file_ending, only_filename, image_description)
+                self.extract_features()
+                score = self.calculate_score()
+                score_float = float(score)
+                hate_value = self.calculate_hate(score_float)
+            # any error: always delete saved image(s)
+            except:
+                self.clean_up()
+
             result = False
             if hate_value=="1": # 0 = not hateful, 1 = hateful
                 result = True

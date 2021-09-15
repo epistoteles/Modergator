@@ -246,9 +246,8 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         entities = update.message.parse_entities()
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
-                #KATRIN: detection API
                 if detect_meme(value):
-                    answer, image_ocr_text, image_scores = return_score_url(value, answer, image_ocr_text, image_scores)
+                    answer, image_ocr_text, image_scores, debug_message = return_score_url(value, answer, image_ocr_text, image_scores, debug_message)
 
         """use hateXplain to evaluate text messages, return label and scores"""
         text = update.message.text
@@ -294,11 +293,12 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         for key, value in entities.items():
             if key.type == 'url' and value.endswith(('.jpg', '.png', '.gif', '.jpeg', '.JPG', '.JPEG')):
                 print(f'    Scoring caption image URL {value}')
+                score_image_dic =  score_image(value)
                 if detect_meme(value):
-                        image_scores[value] = score_image(value)['result']
+                        image_scores[value] = score_image_dic['result']
 
-                debug_message += f"The text was recognised with the following confidence:.\n"
-                debug_message += score_image(value)['conf']
+                debug_message += f"```transcription confidence:" \
+                                 f"    {score_image_dic['conf']} of 100 \n```"
 
         """use hateXplain to evaluate the image caption and then evaluate the targets"""
         if update.message.caption:
@@ -314,7 +314,6 @@ def handle_image(update: Update, context: CallbackContext) -> None:
         else:
             raise NotImplementedError('Image type not implemented')
 
-        #TODO TRAIN detection
         # score image
         answer, image_ocr_text, image_scores, debug_message = return_score_url(file_path, answer,image_ocr_text,image_scores, debug_message)
 
@@ -357,19 +356,22 @@ def return_score_url(file_path, answer, image_ocr_text, image_scores, debug_mess
     print(f'    Scoring sent image URL {file_path}')
     score_image_dic = score_image(file_path)
     image_ocr_text = score_image_dic['ocr_text']
+    result = score_image_dic['result']
     image_scores['sent from your device'] = score_image_dic['result']
 
-    for key, value in image_scores.items():
-        print("value:", value)
-        if value:
-            answer += f"Your image {key} was deemed hateful.\n"
-            answer += f"We have estimated this with the transcription \"{image_ocr_text}\"."
-        image_ocr_text_escaped = image_ocr_text
-        for x in ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
-            image_ocr_text_escaped = image_ocr_text_escaped.replace(x, f'\\{x}')
-        debug_message += f"``` Image:\n" \
-                         f"   classification:{'' if value else ' not'} hateful\.\n" \
-                         f"   transcription:  \"{image_ocr_text_escaped}\"\n```"
+    image_ocr_text_escaped = image_ocr_text
+    for x in ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!', '?']:
+        image_ocr_text_escaped = image_ocr_text_escaped.replace(x, f'\\{x}')
+
+    if result:
+        answer += f"Your image {key} was deemed hateful\.\n"
+        answer += f"We have estimated this with the transcription \"{image_ocr_text_escaped}\"\."
+
+    debug_message += f"``` Image:\n" \
+                     f"   classification:{'' if result else ' not'} hateful\n" \
+                     f"   transcription:  \"{image_ocr_text_escaped}\"\n" \
+                     f"   transcription confidence:" \
+                     f"    {score_image_dic['conf']} of 100 \n```"
 
     return answer, image_ocr_text, image_scores, debug_message
 
@@ -388,6 +390,8 @@ def answer_bot(answer, label, label_score, debug_message, context, update):
                                      chat_id=update.message.chat_id)
     if debug:
         debug_message += f'\nScores range from 0 \(not sure\) to 1 \(very sure\)\. To turn debug information off, type /debug\.'
+        print("bis hier!!", debug_message)
+        print("answer", answer)
         context.bot.send_message(text=debug_message, chat_id=update.message.chat_id, parse_mode='MarkdownV2')
 
 
@@ -401,24 +405,17 @@ def score_image(image_url):
     r_ocr = requests.get(url=f"http://{HOSTDICT['ocr-api']}:{PORTDICT['ocr-api']}/ocr", params=params)
     ocr_text = r_ocr.json()['ocr_text']
     conf = r_ocr.json()['conf']
-    print(f'    OCR text recognized: {ocr_text}')  # TODO: remove debug print
-    params = {"image": image_url, "image_description": ocr_text}
-    r = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
-    print(ocr_text)
-    print(conf)
-    conf = float(conf)
-    params = {"image": image_url, "image_description": ocr_text, "conf": conf}
-    r = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
-    if r.status_code == 200:
-        r.raw.decode_content = True
-        with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
-    else:
-        raise ConnectionError(r.status_code)
 
-    data = r.json()
-    print(f'    Scored image with ', {data['result']} )
-    return {"result": data['result'], "ocr_text": ocr_text, "conf": conf} #TODO warum als dic und nicht die variablen?
+    params = {"image": image_url, "image_description": ocr_text}
+    r_meme = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
+    if r_meme.status_code == 200:
+        r_meme.raw.decode_content = True
+        with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:
+            shutil.copyfileobj(r_meme.raw, f)
+    else:
+        raise ConnectionError(r_meme.status_code)
+    result = r_meme.json()['result']
+    return {"result": result, "ocr_text": ocr_text, "conf": conf} #TODO warum als dic und nicht die variablen?
 
 
 def score_text(text):
@@ -449,8 +446,15 @@ def score_target(text):
 def detect_meme(url):
     print("Start Meme Detection")
     params = {"url": url}
-    r = requests.get(url=f"http://127.0.0.1:{PORTDICT['meme-detection-api']}/classifier", params=params)
-    is_meme = r.json()["result"]
+    # as default:
+    is_meme = True;
+    # the meme-detection-api canÄt handle images that are too small
+    try:
+        r = requests.get(url=f"http://127.0.0.1:{PORTDICT['meme-detection-api']}/classifier", params=params)
+        is_meme = r.json()["result"]
+    except:
+        # if an image cannot be judged: handle as a meme
+        print("except")
     print("is_meme: ", is_meme)
     return is_meme
 
