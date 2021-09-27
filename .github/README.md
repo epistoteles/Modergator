@@ -82,16 +82,12 @@ This might take a few minutes. It does the following:
 - create user-specific configs
 - install all Python dependencies
 
-<<<<<<< HEAD
-Finally, you have to create a bot in the Telegram interface using the [Botfather bot](https://core.telegram.org/bots#6-botfather). You will get a message containing your Telegram bot credentials. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read other people's messages. You also need to make sure that /setjoingroups is enabled for your bot such that it can also be used in groups as well.
-=======
 To run the bot you need to download the models and place them in the right folders as described below:
 * to use the target API, add the model "hate_target.pth" from here https://www.kaggle.com/katinka21/modergator-target-detection-model into the folder:  target-api/model/hate_target.pth.
 * to use the meme API, add the model "LASTtrain.pth" from here https://www.kaggle.com/muennighoff/viliou36?select=LASTtrain.pth into the folder:  model-meme-api/vilio/input/viliou36/LASTtrain.pth"
 * * to use the meme-detection-api you have to download the file "variables.data-00000-of-00001" from https://www.kaggle.com/katinka21/modergator-meme-detection-model-variable and place it into /meme-detection-api/meme_classification_EfficientNetB7/variables/variables.data-00000-of-00001
 
-Finally, you have to generate Telegram bot credentials using the BotFather bot. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read messages.
->>>>>>> Update README.md
+Finally, you have to create a bot in the Telegram interface using the [Botfather bot](https://core.telegram.org/bots#6-botfather). You will get a message containing your Telegram bot credentials. Please paste your access token into a file named `telegram_bot_token.txt` inside the `telegram-bot` directory. Make sure that you disable the [privacy mode](https://core.telegram.org/bots#privacy-mode) when creating the bot, otherwise your bot won't be able to read other people's messages. You also need to make sure that /setjoingroups is enabled for your bot such that it can also be used in groups as well.
 
 You are ready to run the bot!
 
