@@ -24,9 +24,9 @@ Modergator is a Telegram bot able to moderate Telegram groups for hateful conten
 
 Text messages are checked for whether they contain offensive and hateful speech, as well as the target groups that the speech is directed against (if there are any). Voice messages are transcribed and then handled the same way as text messages.
 
-Memes are also checked for hate which arises due to the combination of text and an image.
+Memes are checked for hate which arises due to the combination of text and image.
 
-**Currently, the bot can only understand English language.**
+**Currently, the bot can only understand the English language.**
 
 ## 🎯 Key Features
 
