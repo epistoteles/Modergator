@@ -26,7 +26,7 @@ import pickle
 
 TOKEN = ""
 
-with open("telegram-bot/telegram_bot_token.txt", "r") as file:
+with open("telegram_bot_token.txt", "r") as file:
     TOKEN = file.readline().strip()
 
 print("TOKEN", TOKEN)

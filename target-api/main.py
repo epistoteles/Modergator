@@ -27,7 +27,7 @@ class TargetClassifierResponseSchema(Schema):
 # wenn the model is retrained, change the mapping here to the specific one of the trained model (read from command line while training)
 id_to_target_group = {0: 'Buddhism', 1: 'Asexual', 2: 'Disability', 3: 'Arab', 4: 'Homosexual', 5: 'African', 6: 'Nonreligious', 7: 'Men', 8: 'Indian', 9: 'Jewish', 10: 'Asian', 11: 'Refugee', 12: 'Caucasian', 13: 'Indigenous', 14: 'Christian', 15: 'Women', 16: 'Heterosexual', 17: 'Bisexual', 18: 'Hindu', 19: 'Other', 20: 'Islam', 21: 'Minority', 22: 'Hispanic', 23: 'Economic'}
 model = TargetGroupModel(len(id_to_target_group), 0.1) # dropout_ration = 0.1
-model.load_state_dict(torch.load("target-api/model/hate_target.pth",map_location=torch.device('cpu')))
+model.load_state_dict(torch.load("model/hate_target.pth",map_location=torch.device('cpu')))
 model.eval()
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 
@@ -86,7 +86,7 @@ if os.path.isfile("portdict.pickle"):
     host = '127.0.0.1'
 else:
     port = 5005
-    host = '172.20.0.15'
+    host = '0.0.0.0'
 
 if __name__ == '__main__':
     app.run(host=host, port=port)  # run our Flask app

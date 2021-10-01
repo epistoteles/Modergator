@@ -1,0 +1,9 @@
+FROM python:3.7
+WORKDIR /ocr-api
+COPY . .
+RUN apt-get update
+RUN apt-get install tesseract-ocr -y
+RUN pip3 install -r base-requirements.txt
+RUN pip3 install -r requirements.txt
+EXPOSE 5003
+CMD ["python3", "main.py"]

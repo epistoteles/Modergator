@@ -24,7 +24,7 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 app = Flask(__name__)
 api = Api(app)
 
-saved_model = tf.keras.models.load_model('meme-detection-api/meme_classification_EfficientNetB7')
+saved_model = tf.keras.models.load_model('meme_classification_EfficientNetB7')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'}
 
 class DetectionRequestSchema(Schema):
@@ -81,7 +81,7 @@ if os.path.isfile("portdict.pickle"):
     host = '127.0.0.1'
 else:
     port = 5006
-    host = '172.20.0.16'
+    host = '0.0.0.0'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(
