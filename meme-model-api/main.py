@@ -42,6 +42,7 @@ class Model(MethodResource,Resource):
         src_dir = os.getcwd()
         image_url = request.form['image']
         image_description = request.form['image_description']
+        hate_value = 0 # default not hateful
         if not image_url:
             raise APIImageError('No matching image file found (.jpg .jpeg. png .gif JPG or JPEG)')
         else:
