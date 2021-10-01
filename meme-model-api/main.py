@@ -155,7 +155,7 @@ if os.path.isfile("portdict.pickle"):
     host = '127.0.0.1'
 else:
     port = 5001
-    host = '172.20.0.11'
+    host = '0.0.0.0'
 
 app.config.update({
     'APISPEC_SPEC': APISpec(

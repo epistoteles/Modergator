@@ -230,7 +230,7 @@ def do_ocr(f, custom_config, resize=None):
 net = CRAFT()  # initialize
 
 # Load weights
-net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location=torch.device('cpu'))))
+net.load_state_dict(copyStateDict(torch.load('model/craft_mlt_25k.pth', map_location=torch.device('cpu'))))
 
 net = net.cpu()
 net = torch.nn.DataParallel(net)

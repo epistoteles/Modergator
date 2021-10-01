@@ -16,7 +16,7 @@ def build_model():
     net = CRAFT()     # initialize
 
     # Load weights
-    net.load_state_dict(copyStateDict(torch.load('ocr-api/model/craft_mlt_25k.pth', map_location='cpu')))
+    net.load_state_dict(copyStateDict(torch.load('model/craft_mlt_25k.pth', map_location='cpu')))
 
     net = net.to(device)
     net = torch.nn.DataParallel(net)

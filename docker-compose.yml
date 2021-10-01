@@ -3,106 +3,42 @@ version: "3.3"
 services:
   meme-model-api:
     build:
-      context: .
-      dockerfile: meme-model-api/Dockerfile
+      context: meme-model-api
+      dockerfile: Dockerfile_meme
     ports:
       - "5001:5001"
-    volumes:
-      - type: volume
-        source: data
-        target: /modergator/data/
-        volume:
-          nocopy: false
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.11
   text-api:
     build:
-      context: .
-      dockerfile: text-api/Dockerfile
+      context: text-api
+      dockerfile: Dockerfile_text
     ports:
       - "5002:5002"
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.12
   ocr-api:
     build:
-      context: .
-      dockerfile: ocr-api/Dockerfile
+      context: ocr-api
+      dockerfile: Dockerfile_ocr
     ports:
       - "5003:5003"
-    volumes:
-      - type: volume
-        source: data
-        target: /modergator/data/
-        volume:
-          nocopy: false
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.13
   asr-api:
     build:
-      context: .
-      dockerfile: asr-api/Dockerfile
+      context: asr-api
+      dockerfile: Dockerfile_asr
     ports:
       - "5004:5004"
-    volumes:
-      - type: volume
-        source: data
-        target: /modergator/data/
-        volume:
-          nocopy: false
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.14
   target-api:
     build:
-      context: .
-      dockerfile: target-api/Dockerfile
+      context: target-api
+      dockerfile: Dockerfile_target
     ports:
       - "5005:5005"
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.15
   meme-detection-api:
     build:
-      context: .
-      dockerfile: meme-detection-api/Dockerfile
+      context: meme-detection-api
+      dockerfile: Dockerfile_meme_detection
     ports:
       - "5006:5006"
-    volumes:
-      - type: volume
-        source: data
-        target: /modergator/data/
-        volume:
-          nocopy: false
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.16
   telegram-bot:
     build:
-      context: .
-      dockerfile: telegram-bot/Dockerfile
-    depends_on:
-      - meme-model-api
-      - meme-detection-api
-      - text-api
-      - ocr-api
-      - asr-api
-      - target-api
-    volumes:
-      - type: volume
-        source: data
-        target: /modergator/data/
-        volume:
-          nocopy: false
-    networks:
-      static-network:
-        ipv4_address: 172.20.0.17
-volumes:
-  data:
-networks:
-  static-network:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
+      context: telegram-bot
+      dockerfile: Dockerfile_bot
+
