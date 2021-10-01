@@ -44,16 +44,18 @@ if os.path.isfile("portdict.pickle"):
                 "target-api": '127.0.0.1'}
     PORTDICT = pickle.load(open("portdict.pickle", "rb"))
 else:
-    HOSTDICT = {"meme-model-api": '172.20.0.11',
-                "text-api": '172.20.0.12',
-                "ocr-api": '172.20.0.13',
-                "asr-api": '172.20.0.14',
-                "target-api": '172.20.0.15'}
+    HOSTDICT = {"meme-model-api": 'meme-model-api',
+                "text-api": 'text-api',
+                "ocr-api": 'ocr-api',
+                "asr-api": 'asr-api',
+                "target-api": 'target-api',
+                "meme-detection-api": 'meme-detection-api'}
     PORTDICT = {"meme-model-api": 5001,
                 "text-api": 5002,
                 "ocr-api": 5003,
                 "asr-api": 5004,
-                "target-api": 5005}
+                "target-api": 5005,
+                "meme-detection-api": 5006}
 
 
 # Enable logging
@@ -127,9 +129,9 @@ def debug_command(update: Update, context: CallbackContext) -> None:
 def optout_command(update: Update, _: CallbackContext) -> None:
     """Save user to opt-out list"""
     user = update.effective_user
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    optoutlist = pickle.load(open('optout/optoutlist.pickle', 'rb'))
     if user.id not in optoutlist:
-        pickle.dump(optoutlist + [user.id], open('optoutlist.pickle', 'wb'))
+        pickle.dump(optoutlist + [user.id], open('optout/optoutlist.pickle', 'wb'))
         update.message.reply_text(
             f'Your user ID {user.id} has been saved to my opt-out list. To opt in again, use the /optin command.')
     else:
@@ -140,10 +142,10 @@ def optout_command(update: Update, _: CallbackContext) -> None:
 def optin_command(update: Update, _: CallbackContext) -> None:
     """Remove user from opt-out list"""
     user = update.effective_user
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    optoutlist = pickle.load(open('optout/optoutlist.pickle', 'rb'))
     if user.id in optoutlist:
         optoutlist.remove(user.id)
-        pickle.dump(optoutlist, open('optoutlist.pickle', 'wb'))
+        pickle.dump(optoutlist, open('optout/optoutlist.pickle', 'wb'))
         update.message.reply_text(
             f'Your user ID {user.id} has been opted in again. To opt out, use the /optout command.')
     else:
@@ -233,7 +235,7 @@ def receive_poll(update: Update, context: CallbackContext) -> None:
 
 def handle_text(update: Update, context: CallbackContext) -> None:
     """Check text messages"""
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    optoutlist = pickle.load(open('optout/optoutlist.pickle', 'rb'))
     if (update.effective_user.id not in optoutlist):
         print('Handling text')
 
@@ -259,7 +261,7 @@ def handle_text(update: Update, context: CallbackContext) -> None:
 
 def handle_voice(update: Update, context: CallbackContext) -> None:
     """Handle voice messages"""
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    optoutlist = pickle.load(open('optout/optoutlist.pickle', 'rb'))
     if (update.effective_user.id not in optoutlist):
         print('Handling voice')
 
@@ -280,7 +282,7 @@ def handle_voice(update: Update, context: CallbackContext) -> None:
 
 def handle_image(update: Update, context: CallbackContext) -> None:
     """Check images and their caption"""
-    optoutlist = pickle.load(open('optoutlist.pickle', 'rb'))
+    optoutlist = pickle.load(open('optout/optoutlist.pickle', 'rb'))
     if (update.effective_user.id not in optoutlist):
         print('Handling image')
 
