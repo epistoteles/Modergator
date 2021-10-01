@@ -24,7 +24,7 @@ app = Flask(__name__)
 api = Api(app)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'}
-UPLOAD_FOLDER = '.meme-model-api/vilio/data/img'
+UPLOAD_FOLDER = 'vilio/data/img'
 
 class ModelRequestSchema(Schema):
     image = fields.Str(required=True, description="URL of an image. Allowed extensions are 'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG'")
@@ -63,14 +63,14 @@ class Model(MethodResource,Resource):
 
                 # save image for inference
                 file_inference = "10000" + "." + file_ending
-                f = open('meme-model-api/vilio/data/img/' + file_inference, 'wb')
+                f = open('vilio/data/img/' + file_inference, 'wb')
                 rep = response.read()
                 f.write(rep)
                 f.close()
 
                 #  save image for feature extraction
                 file_extraction = "10000" + "." + file_ending
-                f = open('meme-model-api/vilio/py-bottom-up-attention/data/img/' +
+                f = open('vilio/py-bottom-up-attention/data/img/' +
                          file_extraction, 'wb')
                 f.write(rep)
                 f.close()
@@ -98,7 +98,7 @@ class Model(MethodResource,Resource):
     def calculate_score(self):
         p1 = subprocess.Popen(['python3', 'model_inference.py', '--seed', '129', '--model', 'U', '--test', 'testset',
                              '--lr', '1e-5', '--batchSize', '8', '--tr', 'bert-large-cased', '--epochs', '5',
-                                     '--tsv', '--num_features', '36', '--num_pos', '6', '--loadfin', './input/viliou36/LASTtraindev.pth', '--exp', 'U36'], cwd = 'meme-model-api/vilio', stdout=subprocess.PIPE)
+                                     '--tsv', '--num_features', '36', '--num_pos', '6', '--loadfin', './input/viliou36/LASTtraindev.pth', '--exp', 'U36'], cwd = 'vilio', stdout=subprocess.PIPE)
         p_status = p1.wait()
         result = p1.communicate()[0]
         string_result = result.split()
@@ -111,7 +111,7 @@ class Model(MethodResource,Resource):
         data['label'] = 1 # means hateful
         data['text'] = image_description
 
-        path = 'meme-model-api/vilio/data/'
+        path = 'vilio/data/'
         jsonname = 'testset'
         ext = '.json'
         filePathNameWExt = path + jsonname + ext
@@ -122,10 +122,10 @@ class Model(MethodResource,Resource):
             json.dump(data, f)
 
     def extract_features(self):
-        p = subprocess.Popen(['python3', 'detectron2_mscoco_proposal_maxnms.py', '--batchsize', '1', '--split', 'img', '--weight', 'vgattr', '--minboxes', '36', '--maxboxes', '36'],cwd="meme-model-api/vilio/py-bottom-up-attention/")
+        p = subprocess.Popen(['python3', 'detectron2_mscoco_proposal_maxnms.py', '--batchsize', '1', '--split', 'img', '--weight', 'vgattr', '--minboxes', '36', '--maxboxes', '36'],cwd="vilio/py-bottom-up-attention/")
         #This makes the wait possible:
         p_status = p.wait()
-        shutil.move("meme-model-api/vilio/py-bottom-up-attention/data/hm_vgattr3636.tsv","meme-model-api/vilio/data/HM_img.tsv")
+        shutil.move("vilio/py-bottom-up-attention/data/hm_vgattr3636.tsv","vilio/data/HM_img.tsv")
     def calculate_hate(self, prob):
         if(prob <= -0.75):
             return 1
@@ -133,13 +133,13 @@ class Model(MethodResource,Resource):
             return 0
 
     def clean_up(self):
-        files = glob.glob('meme-model-api/vilio/data/img/*')
+        files = glob.glob('vilio/data/img/*')
         for f in files:
             os.remove(f)
-        files0 = glob.glob('meme-model-api/vilio/data/HM_img.tsv')
+        files0 = glob.glob('vilio/data/HM_img.tsv')
         for f0 in files0:
             os.remove(f0)
-        files2 = glob.glob('meme-model-api/vilio/py-bottom-up-attention/data/img/*')
+        files2 = glob.glob('vilio/py-bottom-up-attention/data/img/*')
         for f2 in files2:
             os.remove(f2)
 

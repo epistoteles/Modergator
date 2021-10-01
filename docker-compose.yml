@@ -25,6 +25,8 @@ services:
       dockerfile: Dockerfile_asr
     ports:
       - "5004:5004"
+    volumes:
+      - ./data:/asr-api/data
   target-api:
     build:
       context: target-api
@@ -41,4 +43,6 @@ services:
     build:
       context: telegram-bot
       dockerfile: Dockerfile_bot
-
+    volumes:
+      - ./optout:/telegram-bot/optout
+      - ./data:/telegram-bot/data
