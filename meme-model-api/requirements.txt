@@ -46,3 +46,5 @@ opencv-python==4.5.1.48
 waitress==2.0.0
 flask==2.0.1
 flask_restful==0.3.9
+cloudpickle
+flask_apispec

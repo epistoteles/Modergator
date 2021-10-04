@@ -44,18 +44,23 @@ if os.path.isfile("portdict.pickle"):
                 "target-api": '127.0.0.1'}
     PORTDICT = pickle.load(open("portdict.pickle", "rb"))
 else:
+    # docker communicates with the other images via their names
     HOSTDICT = {"meme-model-api": 'meme-model-api',
                 "text-api": 'text-api',
                 "ocr-api": 'ocr-api',
                 "asr-api": 'asr-api',
                 "target-api": 'target-api',
                 "meme-detection-api": 'meme-detection-api'}
+    # these are the ports that we defined for each api in their dockerfile (and then again in docker-compose.yml
     PORTDICT = {"meme-model-api": 5001,
                 "text-api": 5002,
                 "ocr-api": 5003,
                 "asr-api": 5004,
                 "target-api": 5005,
                 "meme-detection-api": 5006}
+    # example: the bot would communicate with the text-api via
+    # http://text-api:5002/classifier"
+    # the swagger docu can be reached via: http://localhost:5002/swagger-ui/
 
 
 # Enable logging
@@ -212,7 +217,7 @@ def receive_poll_answer(update: Update, context: CallbackContext) -> None:
         parse_mode=ParseMode.HTML,
     )
     context.bot_data[poll_id]["answers"] += 1
-    # Close poll after three participants voted
+    # Close poll after three participants votedHOSTDICT
     if context.bot_data[poll_id]["answers"] == 3:
         context.bot.stop_poll(
             context.bot_data[poll_id]["chat_id"], context.bot_data[poll_id]["message_id"]

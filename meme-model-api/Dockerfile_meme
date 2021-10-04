@@ -1,9 +1,12 @@
 FROM python:3.8
 WORKDIR /meme-model-api
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 net-tools -y
 COPY . .
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
 RUN pip3 install -r base-requirements.txt
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r requirements_git.txt
+WORKDIR /meme-model-api/vilio/py-bottom-up-attention
+RUN python3 setup.py build develop
+WORKDIR /meme-model-api
 EXPOSE 5001
 CMD ["python3", "main.py"]
