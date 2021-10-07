@@ -60,11 +60,10 @@ To host an instance of the bot on your own, you will need run both the bot itsel
 
 As the dependency torch 1.4.0 (needed for the meme API) does **not work with python versions later than 3.8**, you have to use python 3.8. This guide assumes you already have python 3.8 set up.
 
-First, you need to install the following dependencies:
+First, you need to install the following dependencies (This is the only step for which you need sudo rights):
 ```
 sudo apt-get -y install screen net-tools tesseract-ocr virtualenv ffmpeg
 ```
-This is the only step for which you need sudo rights.
 
 Next, go to Modergator/meme-model-api/vilio/py-bottom-up-attention/data and create the folder "img".
 
