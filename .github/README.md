@@ -149,7 +149,7 @@ The OCR has been developed by Niklas von Boguszewski, we have included the code 
 
 The detection of hatespeech for memes has been developed by Niklas Muennighoff (https://github.com/Muennighoff/vilio). This model has been trained on the Facebook dataset for multimodal natural language processing ([data set](https://ai.facebook.com/tools/hatefulmemes/)). We kept the model, but added the capability to give a prediction for a single meme as input.
 
-Hint: Images that don't contain text won't be forwarded to this api.
+Hint: Images that don't contain text won't be forwarded to this api. Also, image links need to end in 'png', 'jpg', 'jpeg', 'gif', 'JPG' or 'JPEG'!
 
 ### 🧍‍♂️ Target API
 
