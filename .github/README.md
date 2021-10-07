@@ -159,7 +159,7 @@ The target detection is based on the [HateXplain](https://github.com/hate-alert/
 
 The telegram bot runs the target detection for all texts.
 
-### Target Detection Model
+#### Target Detection Model
 The target detection model uses the post id and token as well as the annotated target to train the dataset. The model is build upon the pretrained model *bert-base-uncased*; a dropout and a target classification layer are added. The model could achieve the following evaluation parameters for the classification of 24 target groups: F1: 0.058, Precision: 0.3,  Recall: 0.032.
 
 
