@@ -26,7 +26,7 @@ import pickle
 
 TOKEN = ""
 
-with open("telegram_bot_token.txt", "r") as file:
+with open("bot_token/telegram_bot_token.txt", "r") as file:
     TOKEN = file.readline().strip()
 
 print("TOKEN", TOKEN)
@@ -414,7 +414,7 @@ def score_image(image_url):
     conf = r_ocr.json()['conf']
 
     params = {"image": image_url, "image_description": ocr_text}
-    r_meme = requests.post(url=f"http://localhost:{PORTDICT['meme-model-api']}/classifier", data=params)
+    r_meme = requests.post(url=f"http://{HOSTDICT['meme-model-api']}:{PORTDICT['meme-model-api']}/classifier", data=params)
     if r_meme.status_code == 200:
         r_meme.raw.decode_content = True
         with open(f'{DATA_STUMP}image/{filename}', 'wb') as f:

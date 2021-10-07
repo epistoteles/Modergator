@@ -46,3 +46,4 @@ services:
     volumes:
       - ./optout:/telegram-bot/optout
       - ./data:/telegram-bot/data
+      - ./bot_token:/telegram-bot/bot_token

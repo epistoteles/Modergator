@@ -1,0 +1,36 @@
+version: "3.3"
+
+services:
+  meme-model-api:
+    image: carakat/meme-model-api
+    ports:
+      - "5001:5001"
+  text-api:
+    image: carakat/text-api
+
+    ports:
+      - "5002:5002"
+  ocr-api:
+    image: carakat/ocr-api
+    ports:
+      - "5003:5003"
+  asr-api:
+    image: carakat/asr-api
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./data:/asr-api/data
+  target-api:
+    image: carakat/target-api
+    ports:
+      - "5005:5005"
+  meme-detection-api:
+    image: carakat/meme-detection-api
+    ports:
+      - "5006:5006"
+  telegram-bot:
+    image: carakat/telegram-bot
+    volumes:
+      - ./optout:/telegram-bot/optout
+      - ./data:/telegram-bot/data
+      - ./bot_token:/telegram-bot/bot_token
