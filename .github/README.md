@@ -53,6 +53,7 @@ As of now, the bot provides the following commands:
 - /debug to see Modergators internal workings
 - /joke to make Modergator tell a joke
 
+! Beware: The bot can only handle image links, that end with 'png', 'jpg', 'jpeg', 'gif', 'JPG' or 'JPEG'!
 
 ## ⚙️ Installation
 
