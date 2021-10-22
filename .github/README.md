@@ -2,7 +2,7 @@
   <img src="https://github.com/Epistoteles/Modergator/blob/62e7fb1a4b162667d31f67f2c909e9aeed952fb4/.github/modergator.png" alt="Modergator" width="400">
 </div>
 
-<h4 align="center">Snapping back on hate speech</h4>
+<h4 align="center">Snapping back at hate speech</h4>
 
 <div align="center">
   <img src="https://img.shields.io/badge/python-v3.8-blue.svg">
