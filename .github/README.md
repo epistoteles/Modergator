@@ -40,7 +40,7 @@ Group members can:
 
 ## 💡 How To Use
 
-In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, search for @modergator_bot in the search bar. You can then either interact directly with the bot or add the bot to a group by writing a message. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs, you will get a message from the bot. A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure). In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
+In order to interact with the bot, a Telegram account is needed. For instructions on how to create an account see: https://telegram.org/. To find the bot, search for @modergator_bot in the search bar. You can then either interact directly with the bot by writing a message or add the bot to a group. Every message you or members of the group send are analyzed anonymously for potential hate speech or offensive language. If this case occurs you will get a message from the bot. A score is calculated for the messages indicating how certain the classification is. The score is between 0 (not sure at all) and 1 (very, very sure). In case you disagree with the classification, you can type /poll and you and the other group members can vote and discuss their classification.
 
 You don't want the bot to process your messages? Just type /optout and your messages will be ignored. You changed your mind? With /optin you can give access to the processing again.
 
